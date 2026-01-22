@@ -1,154 +1,133 @@
-# Vijay Nagar Project
+# Vijay Nagar Project - GCP Deployment Guide
 
-This is a full-stack application consisting of a **Next.js** frontend and a **Django** backend.
+This project is configured for deployment on **Google Cloud Platform (GCP)** using **Cloud Run**.
 
 ## Project Structure
 
-- `frontend/`: Next.js application (React, TypeScript, Tailwind CSS)
-- `backend/`: Django application (Python)
+- `frontend/`: Next.js application (Dockerized)
+- `backend/`: Django application (Dockerized)
 
 ## Prerequisites
 
-- [Node.js](https://nodejs.org/) (v18 or later recommended)
-- [Python](https://www.python.org/) (v3.10 or later recommended)
-- [Git](https://git-scm.com/)
+1.  [Google Cloud SDK](https://cloud.google.com/sdk/docs/install) installed and authenticated (`gcloud auth login`).
+2.  A GCP Project created.
+3.  Billing enabled for the project.
+4.  APIs enabled:
+    - Cloud Run API
+    - Artifact Registry API
+    - Cloud Build API
+    - Cloud SQL Admin API (if using Cloud SQL)
 
 ---
 
-## Local Development Guide
+## 1. Setup Environment Variables
 
-Follow these steps to set up the project locally.
+Create a `.env` file in the `backend` directory for local testing (this is ignored by Git, but used by the app if present). For Cloud Run, we will set these in the console or CLI.
 
-### 1. Clone the Repository
-
-```bash
-git clone <repository-url>
-cd Vijay_nagar
+```
+DEBUG=False
+SECRET_KEY=your-production-secret-key
+DATABASE_URL=postgres://user:password@host:port/dbname
+ALLOWED_HOSTS=*
 ```
 
-### 2. Backend Setup
+---
 
-Navigate to the backend directory and set up the Python environment.
+## 2. Deploy Backend (Django) to Cloud Run
+
+### Option A: Direct Source Deployment (Simplest)
+
+Run the following command from the `backend` directory:
 
 ```bash
 cd backend
+gcloud run deploy vijay-nagar-backend \
+  --source . \
+  --region us-central1 \
+  --allow-unauthenticated
 ```
 
-**Create a virtual environment:**
+During deployment, you might be asked to enable APIs. Say `y` (yes).
 
-```bash
-# Windows
-python -m venv venv
-venv\Scripts\activate
+### Option B: Build and Push Container Image
 
-# macOS/Linux
-python3 -m venv venv
-source venv/bin/activate
-```
+1.  **Create an Artifact Registry repository:**
+    ```bash
+    gcloud artifacts repositories create my-repo --repository-format=docker \
+    --location=us-central1 --description="Docker repository"
+    ```
 
-**Install dependencies:**
+2.  **Build the image:**
+    ```bash
+    gcloud builds submit --tag us-central1-docker.pkg.dev/PROJECT_ID/my-repo/backend .
+    ```
 
-```bash
-pip install -r requirements.txt
-```
+3.  **Deploy:**
+    ```bash
+    gcloud run deploy vijay-nagar-backend \
+    --image us-central1-docker.pkg.dev/PROJECT_ID/my-repo/backend \
+    --region us-central1 \
+    --allow-unauthenticated
+    ```
 
-**Run migrations:**
+### Post-Deployment Configuration (Backend)
 
-```bash
-python manage.py migrate
-```
+1.  **Environment Variables:**
+    Go to the Cloud Run Console -> Select Service -> **Edit & Deploy New Revision** -> **Variables**.
+    Add:
+    - `SECRET_KEY`: (Generate a strong key)
+    - `DEBUG`: `False`
+    - `CSRF_TRUSTED_ORIGINS`: `https://your-frontend-url.run.app` (Add this after deploying frontend)
 
-**Start the development server:**
+2.  **Database (Cloud SQL):**
+    - Create a Cloud SQL instance (PostgreSQL).
+    - Create a database and user.
+    - Connect Cloud Run to Cloud SQL:
+      - In Cloud Run Edit page -> **Integrations** or **Cloud SQL connections**.
+      - Set `DATABASE_URL` env var (e.g., `postgres://user:pass@/dbname?host=/cloudsql/project:region:instance`).
 
-```bash
-python manage.py runserver
-```
+3.  **Migrations:**
+    You can run migrations using a temporary Cloud Run job or via Cloud Build. A simple way for one-off tasks:
+    ```bash
+    # Create a job to run migrations
+    gcloud run jobs create migrate \
+      --image us-central1-docker.pkg.dev/PROJECT_ID/my-repo/backend \
+      --command python,manage.py,migrate \
+      --region us-central1
+    
+    gcloud run jobs execute migrate --region us-central1
+    ```
 
-The backend API will be available at `http://localhost:8000`.
+---
 
-### 3. Frontend Setup
+## 3. Deploy Frontend (Next.js) to Cloud Run
 
-Open a new terminal, navigate to the frontend directory, and install dependencies.
+Run the following command from the `frontend` directory:
 
 ```bash
 cd frontend
+gcloud run deploy vijay-nagar-frontend \
+  --source . \
+  --region us-central1 \
+  --allow-unauthenticated
 ```
 
-**Install dependencies:**
+### Post-Deployment Configuration (Frontend)
 
-```bash
-npm install
-```
-
-**Start the development server:**
-
-```bash
-npm run dev
-```
-
-The frontend application will be available at `http://localhost:3000`.
+1.  **Environment Variables:**
+    Go to Cloud Run Console -> Select Frontend Service -> **Variables**.
+    Add:
+    - `NEXT_PUBLIC_API_URL`: The URL of your deployed backend service (e.g., `https://vijay-nagar-backend-xyz.a.run.app`).
 
 ---
 
-## Deployment Guide
+## 4. Final Steps
 
-### Frontend Deployment (Vercel)
+1.  Update Backend `CSRF_TRUSTED_ORIGINS` with the Frontend URL.
+2.  Test the application.
 
-The easiest way to deploy the Next.js frontend is using [Vercel](https://vercel.com/).
+## Troubleshooting
 
-1.  Push your code to a Git repository (GitHub, GitLab, or Bitbucket).
-2.  Log in to Vercel and click "Add New Project".
-3.  Import your repository.
-4.  Configure the project:
-    - **Root Directory**: Select `frontend`.
-    - **Build Command**: `next build` (default).
-    - **Output Directory**: `.next` (default).
-    - **Install Command**: `npm install` (default).
-5.  Click **Deploy**.
-
-### Backend Deployment (Render/Railway)
-
-For the Django backend, you can use platforms like [Render](https://render.com/) or [Railway](https://railway.app/).
-
-**Prerequisites for Production:**
-1.  **Database**: Use PostgreSQL instead of SQLite. Update `DATABASES` in `backend/config/settings.py`.
-2.  **WSGI Server**: Install `gunicorn` (`pip install gunicorn`) and add it to `requirements.txt`.
-3.  **Static Files**: Configure `STATIC_ROOT` in `settings.py` and use `whitenoise` for serving static files.
-
-**Example Steps for Render:**
-1.  Create a new **Web Service** on Render.
-2.  Connect your repository.
-3.  Settings:
-    - **Root Directory**: `backend`
-    - **Build Command**: `pip install -r requirements.txt && python manage.py collectstatic --noinput && python manage.py migrate`
-    - **Start Command**: `gunicorn config.wsgi:application`
-4.  Add Environment Variables:
-    - `PYTHON_VERSION`: `3.11.0` (or your version)
-    - `SECRET_KEY`: (Your Django secret key)
-    - `DEBUG`: `False`
-    - `DATABASE_URL`: (Your PostgreSQL connection string)
-
-### Connecting Frontend and Backend
-
-1.  In your Frontend (Vercel), add an Environment Variable:
-    - `NEXT_PUBLIC_API_URL`: The URL of your deployed backend (e.g., `https://my-backend.onrender.com`).
-2.  Update your frontend API calls to use this variable.
-3.  In your Backend (Django), configure **CORS** to allow requests from your frontend domain.
-    - Install `django-cors-headers`.
-    - Add it to `INSTALLED_APPS` and `MIDDLEWARE`.
-    - Set `CORS_ALLOWED_ORIGINS = ["https://your-frontend.vercel.app"]`.
-
----
-
-## Tech Stack
-
-**Frontend:**
-- Next.js 16
-- React 19
-- TypeScript
-- Tailwind CSS 4
-- Framer Motion
-
-**Backend:**
-- Django 6
-- SQLite (Development)
+- **500 Errors**: Check Cloud Run logs in the GCP Console.
+- **Static Files**: If static files are missing in Django, ensure `whitenoise` is configured correctly (it is already set up in `settings.py`) and `collectstatic` was run (uncomment the line in `Dockerfile` if you want it to run during build, or run it manually). *Note: The current Dockerfile expects `collectstatic` to be run or handled.*
+  - *Recommendation*: Uncomment `# RUN python manage.py collectstatic --noinput` in `backend/Dockerfile` for production builds.
