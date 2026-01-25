@@ -37,15 +37,21 @@ const loginHandler = async (req: Request, res: Response): Promise<void> => {
     const expiresIn = process.env.JWT_EXPIRES_IN;
     
     // If JWT_EXPIRES_IN is not set or is 'never', create token without expiration
-    const signOptions: SignOptions = expiresIn && expiresIn !== 'never' 
-      ? { expiresIn: expiresIn as string | number }
-      : {}; // No expiration if not set or set to 'never'
-    
-    const token = jwt.sign(
-      { id: user.id, email: user.email, role: user.role },
-      jwtSecret,
-      signOptions
-    );
+    let token: string;
+    if (expiresIn && expiresIn !== 'never') {
+      // Token with expiration
+      token = jwt.sign(
+        { id: user.id, email: user.email, role: user.role },
+        jwtSecret,
+        { expiresIn: expiresIn as string | number }
+      );
+    } else {
+      // Token without expiration
+      token = jwt.sign(
+        { id: user.id, email: user.email, role: user.role },
+        jwtSecret
+      );
+    }
 
     res.json({ token, user: { id: user.id, email: user.email, role: user.role } });
   } catch (error) {
