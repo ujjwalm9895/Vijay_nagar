@@ -38,7 +38,9 @@ A modern, production-ready personal portfolio website for a Computer Vision Engi
 │   ├── src/
 │   │   ├── routes/   # API routes
 │   │   ├── middleware/ # Auth & error handling
-│   │   ├── lib/      # Prisma client
+│   │   ├── lib/      # Utilities (JWT, Prisma)
+│   │   │   ├── jwt.ts      # Type-safe JWT utilities
+│   │   │   └── prisma.ts   # Prisma client
 │   │   └── prisma/   # Database seed
 │   └── prisma/       # Prisma schema
 │
@@ -52,6 +54,13 @@ A modern, production-ready personal portfolio website for a Computer Vision Engi
 - Node.js 20+
 - PostgreSQL 16+
 - Docker & Docker Compose (optional)
+
+### Architecture Highlights
+
+- **Type-Safe JWT System**: Fully type-safe JWT token generation and verification with runtime validation
+- **Environment Validation**: JWT configuration validated at application startup
+- **Reusable Utilities**: Centralized JWT logic in `backend/src/lib/jwt.ts`
+- **Strict TypeScript**: Compatible with `strict: true` and `noImplicitAny`
 
 ### Option 1: Local Development
 
@@ -178,6 +187,8 @@ docker-compose exec backend npm run seed
 
 ## 🔐 Admin Authentication
 
+### Login
+
 1. Login at `POST /api/auth/login`:
 ```json
 {
@@ -186,10 +197,39 @@ docker-compose exec backend npm run seed
 }
 ```
 
-2. Use the returned JWT token in subsequent requests:
+2. Response includes JWT token:
+```json
+{
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "user": {
+    "id": "user-id",
+    "email": "admin@example.com",
+    "role": "admin"
+  }
+}
+```
+
+3. Use the JWT token in subsequent requests:
 ```
 Authorization: Bearer <token>
 ```
+
+### Token Expiration
+
+- **No Expiration**: Set `JWT_EXPIRES_IN=never` or leave it unset
+- **With Expiration**: Set `JWT_EXPIRES_IN=7d` (or `24h`, `3600s`, etc.)
+- Tokens are validated at startup - invalid configuration will fail in production
+
+### JWT Utility Functions
+
+The JWT system uses a centralized utility module (`backend/src/lib/jwt.ts`):
+
+- `generateToken(payload, config?)` - Generate JWT tokens
+- `verifyToken(token, config?)` - Verify and decode tokens
+- `getJWTConfig()` - Get validated JWT configuration
+- `validateJWTEnv()` - Validate environment variables at startup
+
+All functions are fully type-safe and compatible with strict TypeScript settings.
 
 ## 🎨 Features
 
@@ -199,7 +239,9 @@ Authorization: Bearer <token>
 - ✅ Smooth animations (Framer Motion)
 - ✅ SEO optimized (metadata, sitemap, robots.txt)
 - ✅ CMS-ready backend API
-- ✅ JWT authentication for admin
+- ✅ **Type-safe JWT authentication** with runtime validation
+- ✅ **Environment variable validation** at startup
+- ✅ **Reusable JWT utilities** with proper error handling
 - ✅ Type-safe (TypeScript)
 - ✅ Production-ready Docker setup
 
@@ -328,6 +370,14 @@ FRONTEND_URL=http://localhost:3000
 ADMIN_EMAIL=admin@example.com
 ADMIN_PASSWORD=changeme123
 ```
+
+**JWT Configuration:**
+- `JWT_SECRET` (required): Secret key for signing tokens. Use a strong, random string in production.
+- `JWT_EXPIRES_IN` (optional): Token expiration time. Options:
+  - `never` or unset: Token never expires
+  - `7d`, `24h`, `3600s`: Time string format
+  - `3600`: Number (seconds)
+  - Examples: `7d`, `30d`, `24h`, `3600`, `never`
 
 ### Frontend (.env.local for local development)
 

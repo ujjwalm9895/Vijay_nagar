@@ -2,6 +2,7 @@ import express, { Request, Response } from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import { errorHandler } from './middleware/errorHandler';
+import { validateJWTEnv } from './lib/jwt';
 import authRoutes from './routes/auth';
 import publicationRoutes from './routes/publications';
 import projectRoutes from './routes/projects';
@@ -10,6 +11,18 @@ import achievementRoutes from './routes/achievements';
 import teachingRoutes from './routes/teaching';
 
 dotenv.config();
+
+// Validate JWT environment variables at startup
+try {
+  validateJWTEnv();
+} catch (error) {
+  console.error('JWT Configuration Error:', error instanceof Error ? error.message : 'Unknown error');
+  if (process.env.NODE_ENV === 'production') {
+    process.exit(1);
+  } else {
+    console.warn('Continuing in development mode, but JWT may not work correctly.');
+  }
+}
 
 const app = express();
 const PORT = process.env.PORT || 3001;
