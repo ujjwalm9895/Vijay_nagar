@@ -34,10 +34,10 @@ const loginHandler = async (req: Request, res: Response): Promise<void> => {
     }
 
     const jwtSecret: string = process.env.JWT_SECRET || 'fallback-secret';
-    const expiresIn: string = process.env.JWT_EXPIRES_IN || '7d';
+    const expiresIn = process.env.JWT_EXPIRES_IN || '7d';
     
     const signOptions: SignOptions = {
-      expiresIn: expiresIn,
+      expiresIn: expiresIn as string | number,
     };
     
     const token = jwt.sign(
