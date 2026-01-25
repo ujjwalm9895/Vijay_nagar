@@ -32,24 +32,27 @@ router.get('/:id', async (req: Request, res: Response) => {
   }
 });
 
+const createExperienceHandler = async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      res.status(400).json({ errors: errors.array() });
+      return;
+    }
+    const experience = await prisma.experience.create({ data: req.body });
+    res.status(201).json(experience);
+  } catch (error) {
+    console.error('Create experience error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
 router.post(
   '/',
   authenticate,
   requireAdmin,
   [body('title').notEmpty(), body('company').notEmpty(), body('startDate').notEmpty()],
-  async (req: AuthRequest, res: Response) => {
-    try {
-      const errors = validationResult(req);
-      if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() });
-      }
-      const experience = await prisma.experience.create({ data: req.body });
-      res.status(201).json(experience);
-    } catch (error) {
-      console.error('Create experience error:', error);
-      res.status(500).json({ error: 'Internal server error' });
-    }
-  }
+  createExperienceHandler
 );
 
 router.put('/:id', authenticate, requireAdmin, async (req: AuthRequest, res: Response) => {

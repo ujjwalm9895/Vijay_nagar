@@ -36,6 +36,25 @@ router.get('/:id', async (req: Request, res: Response) => {
   }
 });
 
+const createPublicationHandler = async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      res.status(400).json({ errors: errors.array() });
+      return;
+    }
+
+    const publication = await prisma.publication.create({
+      data: req.body,
+    });
+
+    res.status(201).json(publication);
+  } catch (error) {
+    console.error('Create publication error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
 // Create publication (admin only)
 router.post(
   '/',
@@ -46,23 +65,7 @@ router.post(
     body('authors').notEmpty(),
     body('description').notEmpty(),
   ],
-  async (req: AuthRequest, res: Response) => {
-    try {
-      const errors = validationResult(req);
-      if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() });
-      }
-
-      const publication = await prisma.publication.create({
-        data: req.body,
-      });
-
-      res.status(201).json(publication);
-    } catch (error) {
-      console.error('Create publication error:', error);
-      res.status(500).json({ error: 'Internal server error' });
-    }
-  }
+  createPublicationHandler
 );
 
 // Update publication (admin only)

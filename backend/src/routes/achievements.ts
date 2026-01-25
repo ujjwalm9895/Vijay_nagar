@@ -32,24 +32,27 @@ router.get('/:id', async (req: Request, res: Response) => {
   }
 });
 
+const createAchievementHandler = async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      res.status(400).json({ errors: errors.array() });
+      return;
+    }
+    const achievement = await prisma.achievement.create({ data: req.body });
+    res.status(201).json(achievement);
+  } catch (error) {
+    console.error('Create achievement error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
 router.post(
   '/',
   authenticate,
   requireAdmin,
   [body('title').notEmpty()],
-  async (req: AuthRequest, res: Response) => {
-    try {
-      const errors = validationResult(req);
-      if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() });
-      }
-      const achievement = await prisma.achievement.create({ data: req.body });
-      res.status(201).json(achievement);
-    } catch (error) {
-      console.error('Create achievement error:', error);
-      res.status(500).json({ error: 'Internal server error' });
-    }
-  }
+  createAchievementHandler
 );
 
 router.put('/:id', authenticate, requireAdmin, async (req: AuthRequest, res: Response) => {

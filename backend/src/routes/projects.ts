@@ -33,24 +33,27 @@ router.get('/industry/:id', async (req: Request, res: Response) => {
   }
 });
 
+const createIndustryProjectHandler = async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      res.status(400).json({ errors: errors.array() });
+      return;
+    }
+    const project = await prisma.industryProject.create({ data: req.body });
+    res.status(201).json(project);
+  } catch (error) {
+    console.error('Create industry project error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
 router.post(
   '/industry',
   authenticate,
   requireAdmin,
   [body('title').notEmpty(), body('role').notEmpty()],
-  async (req: AuthRequest, res: Response) => {
-    try {
-      const errors = validationResult(req);
-      if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() });
-      }
-      const project = await prisma.industryProject.create({ data: req.body });
-      res.status(201).json(project);
-    } catch (error) {
-      console.error('Create industry project error:', error);
-      res.status(500).json({ error: 'Internal server error' });
-    }
-  }
+  createIndustryProjectHandler
 );
 
 router.put('/industry/:id', authenticate, requireAdmin, async (req: AuthRequest, res: Response) => {
@@ -104,24 +107,27 @@ router.get('/academic/:id', async (req: Request, res: Response) => {
   }
 });
 
+const createAcademicProjectHandler = async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      res.status(400).json({ errors: errors.array() });
+      return;
+    }
+    const project = await prisma.academicProject.create({ data: req.body });
+    res.status(201).json(project);
+  } catch (error) {
+    console.error('Create academic project error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
 router.post(
   '/academic',
   authenticate,
   requireAdmin,
   [body('title').notEmpty(), body('description').notEmpty()],
-  async (req: AuthRequest, res: Response) => {
-    try {
-      const errors = validationResult(req);
-      if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() });
-      }
-      const project = await prisma.academicProject.create({ data: req.body });
-      res.status(201).json(project);
-    } catch (error) {
-      console.error('Create academic project error:', error);
-      res.status(500).json({ error: 'Internal server error' });
-    }
-  }
+  createAcademicProjectHandler
 );
 
 router.put('/academic/:id', authenticate, requireAdmin, async (req: AuthRequest, res: Response) => {
