@@ -1,15 +1,11 @@
-import { Metadata } from 'next';
+'use client';
+
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { ArrowRight, MapPin, Mail, Linkedin, Github, GraduationCap } from 'lucide-react';
 import { Section } from '@/components/section';
 import { Card } from '@/components/card';
 import { siteConfig } from '@/config/site';
-
-export const metadata: Metadata = {
-  title: 'Home',
-  description: siteConfig.description,
-};
 
 export default function HomePage() {
   return (

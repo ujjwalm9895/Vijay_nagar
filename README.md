@@ -236,72 +236,41 @@ Authorization: Bearer <token>
 
 ## 🚢 Deployment
 
-### Recommended: Render.com
+### Deploy to Render.com
 
-**Quick Deploy on Render:**
+**Quick Deploy (Recommended):**
 
-1. **Set up PostgreSQL Database:**
-   - Render Dashboard → New + → PostgreSQL
-   - Save the connection string
+1. **Push code to GitHub**
 
-2. **Deploy Backend:**
-   - New + → Web Service
-   - Root Directory: `backend`
-   - Build Command: `npm install && npm run build && npx prisma generate`
-   - Start Command: `npm start`
-   - Add environment variables (see RENDER_DEPLOYMENT.md)
+2. **Use Render Blueprint (Easiest):**
+   - Go to Render Dashboard → **New +** → **Blueprint**
+   - Connect your GitHub repository
+   - Render will detect `render.yaml` and set up all services
+   - Review and deploy
 
-3. **Deploy Frontend:**
-   - New + → Static Site
-   - Root Directory: `frontend`
-   - Build Command: `npm install && npm run build`
-   - Publish Directory: `.next`
-   - Add environment variables
+3. **Or Manual Setup:**
+   - Follow step-by-step guide in [RENDER_DEPLOYMENT.md](RENDER_DEPLOYMENT.md)
 
-**Full guide:** See [RENDER_DEPLOYMENT.md](RENDER_DEPLOYMENT.md)
+**Quick Start Guide:** See [RENDER_QUICKSTART.md](RENDER_QUICKSTART.md)
 
-### Alternative: Vercel (Frontend) + Render (Backend)
+**What gets deployed:**
+- ✅ PostgreSQL Database (managed)
+- ✅ Backend API (Node.js/Express)
+- ✅ Frontend (Next.js Static Site)
 
-**Frontend on Vercel:**
-1. Push code to GitHub
-2. Import project in Vercel
-3. Set environment variables
-4. Deploy
+**After deployment:**
+- Run migrations: `npx prisma migrate deploy` (in backend Shell)
+- Seed database (optional): `npm run seed`
+- Update `FRONTEND_URL` in backend environment variables
 
-**Backend on Render:**
-- Follow Render deployment steps above
+### Local Development with Docker
 
-### Alternative: Self-Hosted (VPS)
-
-1. Build the application:
+For local development only:
 ```bash
-npm run build
-```
-
-2. Set up PostgreSQL database
-3. Configure environment variables
-4. Run migrations:
-```bash
-npm run db:migrate
-```
-
-5. Start production server:
-```bash
-npm start
-```
-
-Or use PM2:
-```bash
-pm2 start dist/server.js --name vijay-nagar-api
-```
-
-### Docker Deployment
-
-Build and push images:
-```bash
-docker-compose build
 docker-compose up -d
 ```
+
+**Note:** For production deployment, use Render.com (see above).
 
 ## 🔧 Development
 

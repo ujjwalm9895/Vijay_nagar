@@ -2,7 +2,19 @@
 
 Get your portfolio up and running in 5 minutes!
 
-## 🚀 Fastest Way (Docker)
+## 🚀 Deploy to Render (Production)
+
+**Fastest way - Use Blueprint:**
+1. Push code to GitHub
+2. Render Dashboard → **New +** → **Blueprint**
+3. Connect repository
+4. Deploy!
+
+See [RENDER_QUICKSTART.md](RENDER_QUICKSTART.md) for detailed steps.
+
+## 💻 Local Development
+
+### Option 1: Docker (Recommended for local)
 
 ```bash
 # Start everything
@@ -61,7 +73,7 @@ Login endpoint: `POST http://localhost:3001/api/auth/login`
 1. Customize content in frontend pages
 2. Update `frontend/src/config/site.ts` with your links
 3. Add your publications/projects via API or seed file
-4. Deploy to production (see DEPLOYMENT.md)
+4. Deploy to Render (see RENDER_QUICKSTART.md or RENDER_DEPLOYMENT.md)
 
 ## 🐛 Troubleshooting
 
@@ -80,5 +92,6 @@ Login endpoint: `POST http://localhost:3001/api/auth/login`
 ## 📖 Full Documentation
 
 - [README.md](README.md) - Complete documentation
-- [DEPLOYMENT.md](DEPLOYMENT.md) - Deployment guide
+- [RENDER_DEPLOYMENT.md](RENDER_DEPLOYMENT.md) - Complete Render deployment guide
+- [RENDER_QUICKSTART.md](RENDER_QUICKSTART.md) - Quick Render deployment
 - [backend/README.md](backend/README.md) - Backend API docs
