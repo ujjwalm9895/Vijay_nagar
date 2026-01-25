@@ -34,11 +34,12 @@ const loginHandler = async (req: Request, res: Response): Promise<void> => {
     }
 
     const jwtSecret: string = process.env.JWT_SECRET || 'fallback-secret';
-    const expiresIn = process.env.JWT_EXPIRES_IN || '7d';
+    const expiresIn = process.env.JWT_EXPIRES_IN;
     
-    const signOptions: SignOptions = {
-      expiresIn: expiresIn as string | number,
-    };
+    // If JWT_EXPIRES_IN is not set or is 'never', create token without expiration
+    const signOptions: SignOptions = expiresIn && expiresIn !== 'never' 
+      ? { expiresIn: expiresIn as string | number }
+      : {}; // No expiration if not set or set to 'never'
     
     const token = jwt.sign(
       { id: user.id, email: user.email, role: user.role },
