@@ -40,7 +40,7 @@ const projects = [
     role: 'Computer Vision Engineer',
     timeline: '2022 - 2023',
     description:
-      'Bird's Eye View (BEV) based road marking detection system for lane keeping and navigation.',
+      "Bird's Eye View (BEV) based road marking detection system for lane keeping and navigation.",
     contributions: [
       'Developed BEV transformation pipeline',
       'Implemented semantic segmentation for road markings',
