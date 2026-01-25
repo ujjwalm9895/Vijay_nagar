@@ -1,6 +1,6 @@
 import express, { Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
+import jwt, { SignOptions } from 'jsonwebtoken';
 import { body, validationResult } from 'express-validator';
 import { prisma } from '../lib/prisma';
 import { authenticate, requireAdmin, AuthRequest } from '../middleware/auth';
@@ -39,10 +39,14 @@ router.post(
       const jwtSecret = process.env.JWT_SECRET || 'fallback-secret';
       const expiresIn = process.env.JWT_EXPIRES_IN || '7d';
       
+      const signOptions: SignOptions = {
+        expiresIn: expiresIn,
+      };
+      
       const token = jwt.sign(
         { id: user.id, email: user.email, role: user.role },
         jwtSecret,
-        { expiresIn: expiresIn as string }
+        signOptions
       );
 
       res.json({ token, user: { id: user.id, email: user.email, role: user.role } });
