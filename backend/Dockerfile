@@ -1,25 +1,35 @@
-# Use official Python image
-FROM python:3.11-slim
+FROM node:20-alpine AS base
 
-# Set environment variables
-ENV PYTHONDONTWRITEBYTECODE=1
-ENV PYTHONUNBUFFERED=1
+# Install dependencies only when needed
+FROM base AS deps
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci
 
-# Set work directory
+# Build the application
+FROM base AS builder
+WORKDIR /app
+COPY --from=deps /app/node_modules ./node_modules
+COPY . .
+RUN npx prisma generate
+RUN npm run build
+
+# Production image
+FROM base AS runner
 WORKDIR /app
 
-# Install dependencies
-COPY requirements.txt /app/
-RUN pip install --no-cache-dir -r requirements.txt
+ENV NODE_ENV=production
 
-# Copy project
-COPY . /app/
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 nodejs
 
-# Collect static files
-# RUN python manage.py collectstatic --noinput
+COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/package.json ./package.json
+COPY --from=builder /app/prisma ./prisma
 
-# Expose port
-EXPOSE 8080
+USER nodejs
 
-# Run gunicorn
-CMD ["gunicorn", "--bind", "0.0.0.0:8080", "config.wsgi:application"]
+EXPOSE 3001
+
+CMD ["node", "dist/server.js"]

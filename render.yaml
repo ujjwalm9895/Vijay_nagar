@@ -1,0 +1,55 @@
+# Render Blueprint Configuration
+# This file allows you to deploy all services at once
+# Go to Render Dashboard → New + → Blueprint → Connect this repo
+
+services:
+  # PostgreSQL Database
+  - type: pg
+    name: vijay-nagar-db
+    databaseName: vijay_nagar_db
+    plan: free  # Change to 'starter' or higher for production
+
+  # Backend API
+  - type: web
+    name: vijay-nagar-backend
+    env: node
+    region: oregon  # Change to your preferred region
+    plan: free  # Change to 'starter' or higher for production
+    rootDir: backend
+    buildCommand: npm install && npm run build && npx prisma generate
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: vijay-nagar-db
+          property: connectionString
+      - key: JWT_SECRET
+        generateValue: true  # Render will generate a secure secret
+      - key: JWT_EXPIRES_IN
+        value: 7d
+      - key: PORT
+        value: 10000
+      - key: NODE_ENV
+        value: production
+      - key: FRONTEND_URL
+        value: https://vijay-nagar-frontend.onrender.com  # Update after frontend deploys
+      - key: ADMIN_EMAIL
+        value: admin@example.com  # Change this!
+      - key: ADMIN_PASSWORD
+        sync: false  # Set this manually in dashboard
+
+  # Frontend
+  - type: web
+    name: vijay-nagar-frontend
+    env: node
+    region: oregon  # Change to your preferred region
+    plan: free  # Change to 'starter' or higher for production
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NEXT_PUBLIC_API_URL
+        value: https://vijay-nagar-backend.onrender.com/api
+      - key: NEXT_PUBLIC_SITE_URL
+        value: https://vijay-nagar-frontend.onrender.com
