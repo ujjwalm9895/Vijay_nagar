@@ -270,7 +270,12 @@ NEXT_PUBLIC_SITE_URL=https://your-project.vercel.app
 
 ## 🎯 Post-Deployment
 
-1. **Test Admin Login:**
+1. **Test Admin Dashboard:**
+   - Visit `https://your-vercel-url.vercel.app/admin`
+   - Login with your admin credentials
+   - Verify you can access the CMS interface
+
+2. **Test Admin API Login:**
    - Go to `https://your-backend.onrender.com/api/auth/login`
    - Use your admin credentials
 
@@ -322,4 +327,13 @@ vercel
 Your portfolio is now live on Vercel + Render! 🎉
 
 **Frontend**: `https://your-project.vercel.app`  
+**Admin Dashboard**: `https://your-project.vercel.app/admin`
+
+### 🎨 Access Admin Dashboard
+
+Navigate to `/admin` on your frontend URL to access the CMS admin interface:
+- **URL**: `https://your-vercel-url.vercel.app/admin`
+- **Login**: Use your admin credentials
+- **Features**: Full web interface for managing content
+- **No coding required**: Point and click interface  
 **Backend**: `https://your-backend.onrender.com`

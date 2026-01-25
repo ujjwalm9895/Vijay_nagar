@@ -68,14 +68,18 @@ Render supports:
 
 ## 🎨 Step 3: Deploy Frontend
 
-1. Go to Render Dashboard → **New +** → **Static Site**
+**⚠️ Important**: Deploy as **Web Service** (not Static Site) for the admin dashboard to work!
+
+1. Go to Render Dashboard → **New +** → **Web Service**
 2. Connect your GitHub repository
 3. Configure:
    - **Name**: `vijay-nagar-frontend`
    - **Branch**: `main`
    - **Root Directory**: `frontend`
+   - **Runtime**: `Node`
    - **Build Command**: `npm install && npm run build`
-   - **Publish Directory**: `.next`
+   - **Start Command**: `npm start`
+   - **Plan**: Free tier (or paid for production)
 
 4. **Environment Variables**:
    ```
@@ -83,7 +87,9 @@ Render supports:
    NEXT_PUBLIC_SITE_URL=https://your-frontend-name.onrender.com
    ```
 
-5. Click **Create Static Site**
+5. Click **Create Web Service**
+
+**Why Web Service?** The admin dashboard uses client-side features (React hooks, localStorage) that require a Node.js runtime, which Static Sites don't provide.
 
 ## 🔄 Step 4: Update Backend CORS
 

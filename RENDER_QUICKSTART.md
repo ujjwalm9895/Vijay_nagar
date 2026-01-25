@@ -87,13 +87,16 @@ Deploy your portfolio to Render in 5 minutes! 🚀
 
 ### Step 3: Frontend (2 minutes)
 
-1. **New +** → **Static Site**
+**Important**: Deploy as **Web Service** (not Static Site) for admin dashboard
+
+1. **New +** → **Web Service**
 2. Connect GitHub repo
 3. Settings:
    - **Name**: `vijay-nagar-frontend`
    - **Root Directory**: `frontend`
+   - **Runtime**: `Node`
    - **Build Command**: `npm install && npm run build`
-   - **Publish Directory**: `.next`
+   - **Start Command**: `npm start`
 
 4. **Environment Variables**:
    ```
@@ -101,7 +104,7 @@ Deploy your portfolio to Render in 5 minutes! 🚀
    NEXT_PUBLIC_SITE_URL=https://vijay-nagar-frontend.onrender.com
    ```
 
-5. Click **Create Static Site**
+5. Click **Create Web Service**
 
 6. **Update Backend CORS**:
    - Go to Backend → Environment

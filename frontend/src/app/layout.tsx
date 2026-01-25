@@ -2,8 +2,7 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import { ThemeProvider } from 'next-themes';
 import './globals.css';
-import { Navbar } from '@/components/navbar';
-import { Footer } from '@/components/footer';
+import { AdminWrapper } from '@/components/admin-wrapper';
 import { siteConfig } from '@/config/site';
 
 const inter = Inter({
@@ -64,9 +63,7 @@ export default function RootLayout({
       <body className={`${inter.variable} font-sans antialiased`}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <div className="min-h-screen bg-white dark:bg-black text-zinc-900 dark:text-zinc-100">
-            <Navbar />
-            <main className="pt-16">{children}</main>
-            <Footer />
+            <AdminWrapper>{children}</AdminWrapper>
           </div>
         </ThemeProvider>
       </body>

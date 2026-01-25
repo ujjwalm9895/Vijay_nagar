@@ -39,7 +39,7 @@ services:
       - key: ADMIN_PASSWORD
         sync: false  # Set this manually in dashboard
 
-  # Frontend
+  # Frontend (Web Service - required for admin dashboard)
   - type: web
     name: vijay-nagar-frontend
     env: node
@@ -48,6 +48,7 @@ services:
     rootDir: frontend
     buildCommand: npm install && npm run build
     startCommand: npm start
+    healthCheckPath: /
     envVars:
       - key: NEXT_PUBLIC_API_URL
         value: https://vijay-nagar-backend.onrender.com/api

@@ -41,12 +41,27 @@ export default function AdminPage() {
   const [formData, setFormData] = useState<any>({});
 
   useEffect(() => {
+    // Test API connection on mount
+    testApiConnection();
+    
     const storedToken = localStorage.getItem('admin_token');
     if (storedToken) {
       setToken(storedToken);
       verifyToken(storedToken);
     }
   }, []);
+
+  const testApiConnection = async () => {
+    try {
+      const response = await fetch(`${API_URL.replace('/api', '')}/api/health`);
+      if (!response.ok) {
+        console.warn('API health check failed:', response.status);
+      }
+    } catch (err) {
+      console.error('Cannot reach API at:', API_URL);
+      console.error('Error:', err);
+    }
+  };
 
   const verifyToken = async (tokenToVerify: string) => {
     try {
@@ -85,19 +100,31 @@ export default function AdminPage() {
         body: JSON.stringify({ email, password }),
       });
 
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
+        setError(errorData.error || `Server error: ${response.status} ${response.statusText}`);
+        return;
+      }
+
       const data = await response.json();
 
-      if (response.ok) {
+      if (data.token) {
         setToken(data.token);
         setUser(data.user);
         setIsAuthenticated(true);
         localStorage.setItem('admin_token', data.token);
         loadData(data.token);
       } else {
-        setError(data.error || 'Login failed');
+        setError('Invalid response from server');
       }
     } catch (err) {
-      setError('Network error. Please check your connection.');
+      const errorMessage = err instanceof Error ? err.message : 'Unknown error';
+      console.error('Login error:', err);
+      setError(
+        `Network error: ${errorMessage}. ` +
+        `Please check: 1) Backend is running at ${API_URL}, ` +
+        `2) CORS is configured correctly, 3) Environment variable NEXT_PUBLIC_API_URL is set.`
+      );
     } finally {
       setLoading(false);
     }
@@ -121,9 +148,18 @@ export default function AdminPage() {
       if (response.ok) {
         const data = await response.json();
         setPublications(data);
+      } else {
+        console.error('Failed to load publications:', response.status, response.statusText);
+        if (response.status === 401) {
+          // Token expired or invalid
+          handleLogout();
+          setError('Session expired. Please login again.');
+        }
       }
     } catch (err) {
       console.error('Failed to load data:', err);
+      const errorMessage = err instanceof Error ? err.message : 'Unknown error';
+      setError(`Failed to load publications: ${errorMessage}. Check API connection at ${API_URL}`);
     }
   };
 
@@ -174,12 +210,15 @@ export default function AdminPage() {
         await loadData(token);
         setEditingId(null);
         setFormData({});
+        setError(''); // Clear any previous errors
       } else {
-        const data = await response.json();
-        setError(data.error || 'Failed to save');
+        const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
+        setError(errorData.error || `Failed to save: ${response.status} ${response.statusText}`);
       }
     } catch (err) {
-      setError('Network error');
+      const errorMessage = err instanceof Error ? err.message : 'Unknown error';
+      console.error('Save error:', err);
+      setError(`Network error: ${errorMessage}. Check API connection at ${API_URL}`);
     } finally {
       setLoading(false);
     }
@@ -199,11 +238,15 @@ export default function AdminPage() {
 
       if (response.ok) {
         await loadData(token);
+        setError(''); // Clear any previous errors
       } else {
-        setError('Failed to delete');
+        const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
+        setError(errorData.error || `Failed to delete: ${response.status} ${response.statusText}`);
       }
     } catch (err) {
-      setError('Network error');
+      const errorMessage = err instanceof Error ? err.message : 'Unknown error';
+      console.error('Delete error:', err);
+      setError(`Network error: ${errorMessage}. Check API connection at ${API_URL}`);
     } finally {
       setLoading(false);
     }
@@ -222,8 +265,13 @@ export default function AdminPage() {
 
             <form onSubmit={handleLogin} className="space-y-4">
               {error && (
-                <div className="p-3 bg-red-100 dark:bg-red-900/30 border border-red-300 dark:border-red-700 rounded text-red-700 dark:text-red-300 text-sm">
-                  {error}
+                <div className="p-3 bg-red-100 dark:bg-red-900/30 border border-red-300 dark:border-red-700 rounded text-red-700 dark:text-red-300 text-sm space-y-2">
+                  <div className="font-semibold">⚠️ Error:</div>
+                  <div>{error}</div>
+                  <div className="text-xs mt-2 opacity-75 border-t border-red-300 dark:border-red-700 pt-2">
+                    <div>API URL: <code className="bg-red-200 dark:bg-red-800 px-1 rounded">{API_URL}</code></div>
+                    <div className="mt-1">Check: 1) Backend is running, 2) CORS is configured, 3) Environment variable is set</div>
+                  </div>
                 </div>
               )}
 
