@@ -71,7 +71,21 @@ npm run dev
 - Frontend: http://localhost:3000
 - Backend API: http://localhost:3001/api
 
-## 🔑 Admin Login
+## 🔑 Admin Access
+
+### 🎨 Admin Dashboard UI (Recommended)
+
+**Access**: Navigate to `/admin` on your website
+- **Local**: `http://localhost:3000/admin`
+- **Production**: `https://your-domain.com/admin`
+
+**Features:**
+- Beautiful web interface
+- No coding required
+- Full CRUD operations
+- Responsive design with dark mode
+
+### API Login (For Developers)
 
 Default credentials (change in `.env`):
 - Email: `admin@example.com`

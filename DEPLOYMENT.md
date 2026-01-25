@@ -7,9 +7,11 @@ Complete guide to deploy your portfolio backend on Render.com.
 ## 🚀 Overview
 
 This guide covers deploying:
-- **Frontend**: Static Site or Web Service (Next.js)
+- **Frontend**: Static Site or Web Service (Next.js) with **Admin Dashboard UI** at `/admin`
 - **Backend**: Web Service (Node.js/Express)
 - **Database**: Managed PostgreSQL
+
+**Admin Dashboard**: After deployment, access the CMS admin interface at `https://your-domain.com/admin`
 
 ## 📋 Prerequisites
 

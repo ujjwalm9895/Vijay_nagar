@@ -121,7 +121,15 @@ Or use an online generator: https://generate-secret.vercel.app/32
 
 1. **Backend Health**: `https://your-backend.onrender.com/api/health`
 2. **Frontend**: `https://your-frontend.onrender.com`
-3. **Admin Login**: Use your admin credentials
+3. **Admin Dashboard**: `https://your-frontend.onrender.com/admin`
+4. **Admin Login**: Use your admin credentials
+
+### 🎨 Access Admin Dashboard
+
+After deployment, access the CMS admin interface:
+- **URL**: `https://your-frontend.onrender.com/admin`
+- **Login**: Use your admin email and password
+- **Features**: Beautiful web interface for managing content
 
 ## 🐛 Common Issues
 

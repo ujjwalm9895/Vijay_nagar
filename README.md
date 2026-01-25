@@ -267,6 +267,59 @@ All functions are fully type-safe and compatible with strict TypeScript settings
 10. **Teaching & Service** - Academic contributions
 11. **Contact** - Contact information
 
+## 📖 Using the CMS & Website
+
+### 🎨 Admin Dashboard UI (Recommended)
+
+**Access the Admin Dashboard**: Navigate to `/admin` on your website
+- **Local**: `http://localhost:3000/admin`
+- **Production**: `https://your-domain.com/admin`
+
+**Features:**
+- ✅ Beautiful, intuitive web interface
+- ✅ Login with email/password
+- ✅ Manage publications (Create, Read, Update, Delete)
+- ✅ Tabbed interface for different content types
+- ✅ Responsive design with dark mode support
+- ✅ Real-time updates
+- ✅ No coding required - point and click interface
+
+**Quick Start:**
+1. Visit `/admin` on your website
+2. Login with your admin credentials
+3. Start managing content through the UI!
+
+### 📚 API Access (For Developers)
+
+**📚 Complete CMS Usage Guide**: [CMS_USAGE.md](CMS_USAGE.md)
+- Admin authentication and login
+- Managing content (publications, projects, experience, etc.)
+- API endpoints and examples
+- Code examples (JavaScript, Python, curl)
+- Common workflows
+- Security best practices
+
+**⚡ Quick Reference**: [CMS_QUICK_REFERENCE.md](CMS_QUICK_REFERENCE.md)
+- Quick commands for common operations
+- One-liner examples
+- Endpoint reference table
+
+### Quick Start (API)
+
+1. **Login to CMS:**
+   ```bash
+   curl -X POST http://localhost:3001/api/auth/login \
+     -H "Content-Type: application/json" \
+     -d '{"email": "admin@example.com", "password": "changeme123"}'
+   ```
+
+2. **Use the token** in subsequent requests:
+   ```
+   Authorization: Bearer <your-token>
+   ```
+
+3. **Manage content** using the API endpoints (see guides above)
+
 ## 🚀 Quick Deploy
 
 ### Option 1: Vercel + Render (Recommended)

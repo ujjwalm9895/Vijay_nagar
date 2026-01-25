@@ -78,6 +78,19 @@ const token = generateToken({
 const payload = verifyToken(token);
 ```
 
+## 🎨 Admin Dashboard UI
+
+**Easiest way to manage content**: Use the web interface at `/admin`
+
+- **Local**: `http://localhost:3000/admin`
+- **Production**: `https://your-domain.com/admin`
+
+Features:
+- Beautiful web interface for managing content
+- No coding required
+- Full CRUD operations for publications
+- Responsive design with dark mode
+
 ## API Endpoints
 
 ### Public
@@ -99,6 +112,8 @@ const payload = verifyToken(token);
 ```
 Authorization: Bearer <jwt-token>
 ```
+
+**Note**: For non-technical users, use the Admin Dashboard UI at `/admin` instead of the API.
 
 ## Database Schema
 
