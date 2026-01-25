@@ -39,14 +39,10 @@ router.post(
       const jwtSecret = process.env.JWT_SECRET || 'fallback-secret';
       const expiresIn = process.env.JWT_EXPIRES_IN || '7d';
       
-      const signOptions: SignOptions = {
-        expiresIn: expiresIn,
-      };
-      
       const token = jwt.sign(
         { id: user.id, email: user.email, role: user.role },
         jwtSecret,
-        signOptions
+        { expiresIn: expiresIn as string | number }
       );
 
       res.json({ token, user: { id: user.id, email: user.email, role: user.role } });
