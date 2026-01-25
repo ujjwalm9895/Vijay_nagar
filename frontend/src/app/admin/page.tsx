@@ -356,8 +356,12 @@ export default function AdminPage() {
       {/* Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {error && (
-          <div className="mb-4 p-3 bg-red-100 dark:bg-red-900/30 border border-red-300 dark:border-red-700 rounded text-red-700 dark:text-red-300 text-sm">
-            {error}
+          <div className="mb-4 p-3 bg-red-100 dark:bg-red-900/30 border border-red-300 dark:border-red-700 rounded text-red-700 dark:text-red-300 text-sm space-y-2">
+            <div className="font-semibold">⚠️ Error:</div>
+            <div>{error}</div>
+            <div className="text-xs mt-2 opacity-75">
+              API URL: <code className="bg-red-200 dark:bg-red-800 px-1 rounded">{API_URL}</code>
+            </div>
           </div>
         )}
 
