@@ -13,7 +13,8 @@
     "db:migrate:deploy": "prisma migrate deploy",
     "db:studio": "prisma studio",
     "seed": "tsx src/prisma/seed.ts",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma generate",
+    "generate:jwt-secret": "node scripts/generate-jwt-secret.js"
   },
   "keywords": ["portfolio", "api", "cms"],
   "author": "Vijay Nagar",

@@ -81,17 +81,25 @@ npm install
 cp .env.example .env
 ```
 
+**Generate a secure JWT secret (recommended):**
+```bash
+npm run generate:jwt-secret
+# Copy the generated secret to your .env file
+```
+
 Edit `.env` with your configuration:
 ```env
 DATABASE_URL="postgresql://user:password@localhost:5432/vijay_nagar_db?schema=public"
-JWT_SECRET="your-super-secret-jwt-key"
-JWT_EXPIRES_IN="7d"
+JWT_SECRET="<generated-secret-from-above-command>"
+JWT_EXPIRES_IN="never"
 PORT=3001
 NODE_ENV=development
 FRONTEND_URL=http://localhost:3000
 ADMIN_EMAIL=admin@example.com
 ADMIN_PASSWORD=changeme123
 ```
+
+**Note:** The `.env.example` file includes a secure example JWT secret (128 characters). For production, always generate a new unique secret using `npm run generate:jwt-secret`.
 
 4. Set up database:
 ```bash
@@ -337,14 +345,15 @@ docker-compose up -d
 ### Backend Commands
 
 ```bash
-npm run dev          # Start development server
-npm run build        # Build for production
-npm run start        # Start production server
-npm run db:generate  # Generate Prisma client
-npm run db:migrate   # Run database migrations
-npm run db:push      # Push schema changes
-npm run db:studio    # Open Prisma Studio
-npm run seed         # Seed database
+npm run dev              # Start development server
+npm run build            # Build for production
+npm run start            # Start production server
+npm run generate:jwt-secret  # Generate secure JWT secret
+npm run db:generate      # Generate Prisma client
+npm run db:migrate       # Run database migrations
+npm run db:push          # Push schema changes
+npm run db:studio        # Open Prisma Studio
+npm run seed             # Seed database
 ```
 
 ### Frontend Commands
@@ -362,8 +371,8 @@ npm run lint         # Run ESLint
 
 ```env
 DATABASE_URL=postgresql://user:password@host:port/dbname
-JWT_SECRET=your-secret-key
-JWT_EXPIRES_IN=7d
+JWT_SECRET=<generate-using-npm-run-generate-jwt-secret>
+JWT_EXPIRES_IN=never
 PORT=3001
 NODE_ENV=development
 FRONTEND_URL=http://localhost:3000
@@ -372,7 +381,11 @@ ADMIN_PASSWORD=changeme123
 ```
 
 **JWT Configuration:**
-- `JWT_SECRET` (required): Secret key for signing tokens. Use a strong, random string in production.
+- `JWT_SECRET` (required): Secret key for signing tokens. 
+  - **Generate securely**: `npm run generate:jwt-secret` (in backend directory)
+  - **Minimum length**: 32 characters (64+ recommended for production)
+  - **Security**: Must be cryptographically random - never use predictable values
+  - The `.env.example` file includes a secure example secret
 - `JWT_EXPIRES_IN` (optional): Token expiration time. Options:
   - `never` or unset: Token never expires
   - `7d`, `24h`, `3600s`: Time string format

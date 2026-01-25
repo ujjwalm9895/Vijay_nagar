@@ -22,6 +22,12 @@ cp .env.example .env
 # Edit .env with your settings
 ```
 
+**Generate a secure JWT secret:**
+```bash
+npm run generate:jwt-secret
+# Copy the generated secret to your .env file
+```
+
 3. Set up database:
 ```bash
 npm run db:generate
@@ -39,6 +45,10 @@ npm run dev
 ### Environment Variables
 
 - `JWT_SECRET` (required): Secret key for signing tokens
+  - **Generate securely**: `npm run generate:jwt-secret`
+  - **Minimum length**: 32 characters (64+ recommended)
+  - **Security**: Must be cryptographically random
+  - The system validates secret strength at startup
 - `JWT_EXPIRES_IN` (optional): Token expiration
   - `never` or unset: Token never expires
   - `7d`, `24h`, `3600s`: Time string format

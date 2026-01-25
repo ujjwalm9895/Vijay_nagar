@@ -44,6 +44,14 @@ export function getJWTConfig(): JWTConfig {
     throw new Error('JWT_SECRET environment variable is required');
   }
 
+  // Validate secret strength
+  if (secret.length < 32) {
+    throw new Error(
+      'JWT_SECRET must be at least 32 characters long. ' +
+      'Run "npm run generate:jwt-secret" to generate a secure secret.'
+    );
+  }
+
   const expiresIn = process.env.JWT_EXPIRES_IN;
   
   // If expiresIn is 'never' or empty, token won't expire
@@ -61,6 +69,7 @@ export function getJWTConfig(): JWTConfig {
 /**
  * Creates sign options for JWT token generation
  * Validates and normalizes expiresIn to ensure type safety
+ * Returns a properly typed SignOptions object
  */
 function createSignOptions(expiresIn?: string | number): SignOptions | undefined {
   if (!expiresIn) {
@@ -70,7 +79,7 @@ function createSignOptions(expiresIn?: string | number): SignOptions | undefined
   // Handle number type
   if (typeof expiresIn === 'number') {
     if (expiresIn > 0) {
-      return { expiresIn };
+      return { expiresIn: expiresIn as number };
     }
     return undefined;
   }
@@ -85,7 +94,9 @@ function createSignOptions(expiresIn?: string | number): SignOptions | undefined
 
     // Check if it's a valid time string (e.g., "7d", "24h", "3600s")
     if (isValidTimeString(trimmed)) {
-      return { expiresIn: trimmed };
+      // jsonwebtoken accepts string values like "7d", "24h", etc. for expiresIn
+      // TypeScript's SignOptions.expiresIn accepts string values that match time patterns
+      return { expiresIn: trimmed as SignOptions['expiresIn'] };
     }
     
     // Check if it's a number as string
@@ -198,10 +209,41 @@ export function verifyToken(
  * Call this during application initialization
  */
 export function validateJWTEnv(): void {
-  if (!process.env.JWT_SECRET) {
+  const secret = process.env.JWT_SECRET;
+  
+  if (!secret) {
     throw new Error(
       'JWT_SECRET environment variable is required. ' +
-      'Please set it in your environment variables.'
+      'Please set it in your environment variables. ' +
+      'Run "npm run generate:jwt-secret" to generate a secure secret.'
+    );
+  }
+
+  // Validate secret strength
+  if (secret.length < 32) {
+    throw new Error(
+      `JWT_SECRET is too short (${secret.length} characters). ` +
+      'It must be at least 32 characters long for security. ' +
+      'Run "npm run generate:jwt-secret" to generate a secure secret.'
+    );
+  }
+
+  // Warn if secret looks weak (common patterns)
+  const weakPatterns = [
+    /^password/i,
+    /^secret/i,
+    /^jwt/i,
+    /^token/i,
+    /^key$/i,
+    /^123/,
+    /^admin/i,
+  ];
+
+  if (weakPatterns.some(pattern => pattern.test(secret))) {
+    console.warn(
+      '⚠️  Warning: JWT_SECRET appears to be weak. ' +
+      'Consider using a cryptographically random secret. ' +
+      'Run "npm run generate:jwt-secret" to generate a secure secret.'
     );
   }
 
