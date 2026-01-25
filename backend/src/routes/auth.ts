@@ -1,9 +1,9 @@
-import express from 'express';
+import express, { Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { body, validationResult } from 'express-validator';
 import { prisma } from '../lib/prisma';
-import { authenticate, requireAdmin } from '../middleware/auth';
+import { authenticate, requireAdmin, AuthRequest } from '../middleware/auth';
 
 const router = express.Router();
 
@@ -14,7 +14,7 @@ router.post(
     body('email').isEmail().normalizeEmail(),
     body('password').notEmpty(),
   ],
-  async (req, res) => {
+  async (req: Request, res: Response) => {
     try {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
@@ -36,10 +36,13 @@ router.post(
         return res.status(401).json({ error: 'Invalid credentials' });
       }
 
+      const jwtSecret = process.env.JWT_SECRET || 'fallback-secret';
+      const expiresIn = process.env.JWT_EXPIRES_IN || '7d';
+      
       const token = jwt.sign(
         { id: user.id, email: user.email, role: user.role },
-        process.env.JWT_SECRET || 'fallback-secret',
-        { expiresIn: process.env.JWT_EXPIRES_IN || '7d' }
+        jwtSecret,
+        { expiresIn: expiresIn as string }
       );
 
       res.json({ token, user: { id: user.id, email: user.email, role: user.role } });
@@ -51,7 +54,7 @@ router.post(
 );
 
 // Get current user
-router.get('/me', authenticate, (req, res) => {
+router.get('/me', authenticate, (req: AuthRequest, res: Response) => {
   res.json({ user: req.user });
 });
 
@@ -64,7 +67,7 @@ router.post(
     body('currentPassword').notEmpty(),
     body('newPassword').isLength({ min: 8 }),
   ],
-  async (req, res) => {
+  async (req: AuthRequest, res: Response) => {
     try {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {

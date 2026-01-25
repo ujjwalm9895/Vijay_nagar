@@ -1,11 +1,11 @@
-import express from 'express';
+import express, { Request, Response } from 'express';
 import { body, validationResult } from 'express-validator';
 import { prisma } from '../lib/prisma';
-import { authenticate, requireAdmin } from '../middleware/auth';
+import { authenticate, requireAdmin, AuthRequest } from '../middleware/auth';
 
 const router = express.Router();
 
-router.get('/', async (req, res) => {
+router.get('/', async (req: Request, res: Response) => {
   try {
     const teaching = await prisma.teachingService.findMany({
       orderBy: { order: 'asc' },
@@ -17,7 +17,7 @@ router.get('/', async (req, res) => {
   }
 });
 
-router.get('/:id', async (req, res) => {
+router.get('/:id', async (req: Request, res: Response) => {
   try {
     const item = await prisma.teachingService.findUnique({
       where: { id: req.params.id },
@@ -37,7 +37,7 @@ router.post(
   authenticate,
   requireAdmin,
   [body('title').notEmpty(), body('institution').notEmpty(), body('role').notEmpty()],
-  async (req, res) => {
+  async (req: AuthRequest, res: Response) => {
     try {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
@@ -52,7 +52,7 @@ router.post(
   }
 );
 
-router.put('/:id', authenticate, requireAdmin, async (req, res) => {
+router.put('/:id', authenticate, requireAdmin, async (req: AuthRequest, res: Response) => {
   try {
     const item = await prisma.teachingService.update({
       where: { id: req.params.id },
@@ -65,7 +65,7 @@ router.put('/:id', authenticate, requireAdmin, async (req, res) => {
   }
 });
 
-router.delete('/:id', authenticate, requireAdmin, async (req, res) => {
+router.delete('/:id', authenticate, requireAdmin, async (req: AuthRequest, res: Response) => {
   try {
     await prisma.teachingService.delete({ where: { id: req.params.id } });
     res.json({ message: 'Item deleted successfully' });

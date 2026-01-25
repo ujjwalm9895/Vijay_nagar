@@ -217,51 +217,69 @@ Authorization: Bearer <token>
 10. **Teaching & Service** - Academic contributions
 11. **Contact** - Contact information
 
-## 🚀 Quick Deploy to Render
+## 🚀 Quick Deploy
 
-1. **Push code to GitHub**
+### Option 1: Vercel + Render (Recommended)
 
-2. **Option A: Use Blueprint (Recommended)**
-   - Go to Render Dashboard → **New +** → **Blueprint**
-   - Connect your GitHub repository
-   - Render will detect `render.yaml` and deploy all services
+1. **Backend on Render:**
+   - Create PostgreSQL database
+   - Deploy Web Service (root: `backend`)
+   - Set environment variables
 
-3. **Option B: Manual Setup**
-   - Follow step-by-step guide in [RENDER_DEPLOYMENT.md](RENDER_DEPLOYMENT.md)
+2. **Frontend on Vercel:**
+   - Import GitHub repo
+   - Set root directory: `frontend`
+   - Add environment variables
 
-4. **After deployment:**
-   - Run migrations in backend Shell: `npx prisma migrate deploy`
-   - Seed database (optional): `npm run seed`
-   - Update `FRONTEND_URL` in backend environment variables
+3. **Connect them:**
+   - Update `FRONTEND_URL` in Render with Vercel URL
+   - Update `NEXT_PUBLIC_API_URL` in Vercel with Render URL
+
+**Full guide:** [VERCEL_RENDER_DEPLOYMENT.md](VERCEL_RENDER_DEPLOYMENT.md)
+
+### Option 2: Render Only
+
+1. Use Render Blueprint (detects `render.yaml`)
+2. Or follow [RENDER_DEPLOYMENT.md](RENDER_DEPLOYMENT.md)
 
 ## 🚢 Deployment
 
-### Deploy to Render.com
+### Recommended: Vercel (Frontend) + Render (Backend)
 
-**Quick Deploy (Recommended):**
+**Best of both worlds:**
+- **Vercel**: Optimized Next.js hosting with edge functions and global CDN
+- **Render**: Reliable backend with managed PostgreSQL
 
-1. **Push code to GitHub**
+**Quick Deploy:**
 
-2. **Use Render Blueprint (Easiest):**
-   - Go to Render Dashboard → **New +** → **Blueprint**
-   - Connect your GitHub repository
-   - Render will detect `render.yaml` and set up all services
-   - Review and deploy
+1. **Backend on Render:**
+   - Render Dashboard → **New +** → **PostgreSQL** (database)
+   - Render Dashboard → **New +** → **Web Service** (backend)
+   - Root Directory: `backend`
+   - Build: `npm install && npm run build && npx prisma generate`
+   - Start: `npm start`
 
-3. **Or Manual Setup:**
-   - Follow step-by-step guide in [RENDER_DEPLOYMENT.md](RENDER_DEPLOYMENT.md)
+2. **Frontend on Vercel:**
+   - Vercel Dashboard → **Add New Project**
+   - Import GitHub repository
+   - Root Directory: `frontend`
+   - Framework: Next.js (auto-detected)
 
-**Quick Start Guide:** See [RENDER_QUICKSTART.md](RENDER_QUICKSTART.md)
+3. **Set Environment Variables:**
+   - **Render Backend**: `DATABASE_URL`, `JWT_SECRET`, `FRONTEND_URL` (Vercel URL)
+   - **Vercel Frontend**: `NEXT_PUBLIC_API_URL` (Render backend URL)
 
-**What gets deployed:**
-- ✅ PostgreSQL Database (managed)
-- ✅ Backend API (Node.js/Express)
-- ✅ Frontend (Next.js Static Site)
+4. **Initialize Database:**
+   - Render Shell: `npx prisma migrate deploy`
+   - Optional: `npm run seed`
 
-**After deployment:**
-- Run migrations: `npx prisma migrate deploy` (in backend Shell)
-- Seed database (optional): `npm run seed`
-- Update `FRONTEND_URL` in backend environment variables
+**Full Guide:** See [VERCEL_RENDER_DEPLOYMENT.md](VERCEL_RENDER_DEPLOYMENT.md)
+
+### Alternative: Render Only
+
+Deploy everything on Render:
+- See [RENDER_DEPLOYMENT.md](RENDER_DEPLOYMENT.md) for complete guide
+- Or use [RENDER_QUICKSTART.md](RENDER_QUICKSTART.md) for quick setup
 
 ### Local Development with Docker
 
@@ -318,13 +336,18 @@ NEXT_PUBLIC_API_URL=http://localhost:3001/api
 NEXT_PUBLIC_SITE_URL=http://localhost:3000
 ```
 
-### Render Deployment
+### Deployment Environment Variables
 
-For Render deployment, see [RENDER_DEPLOYMENT.md](RENDER_DEPLOYMENT.md) for complete environment variable setup.
+**Vercel + Render (Recommended):**
+- **Render Backend**: `DATABASE_URL`, `JWT_SECRET`, `FRONTEND_URL` (Vercel URL)
+- **Vercel Frontend**: `NEXT_PUBLIC_API_URL` (Render backend URL), `NEXT_PUBLIC_SITE_URL` (Vercel URL)
 
-**Quick Reference:**
-- Backend needs: `DATABASE_URL`, `JWT_SECRET`, `FRONTEND_URL`, etc.
-- Frontend needs: `NEXT_PUBLIC_API_URL`, `NEXT_PUBLIC_SITE_URL`
+**Render Only:**
+- See [RENDER_DEPLOYMENT.md](RENDER_DEPLOYMENT.md) for complete setup
+
+**Full guides:**
+- [VERCEL_RENDER_DEPLOYMENT.md](VERCEL_RENDER_DEPLOYMENT.md) - Vercel + Render setup
+- [RENDER_DEPLOYMENT.md](RENDER_DEPLOYMENT.md) - Render only setup
 
 ## 🤝 Contributing
 

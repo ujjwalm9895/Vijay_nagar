@@ -1,12 +1,12 @@
-import express from 'express';
+import express, { Request, Response } from 'express';
 import { body, validationResult } from 'express-validator';
 import { prisma } from '../lib/prisma';
-import { authenticate, requireAdmin } from '../middleware/auth';
+import { authenticate, requireAdmin, AuthRequest } from '../middleware/auth';
 
 const router = express.Router();
 
 // Industry Projects
-router.get('/industry', async (req, res) => {
+router.get('/industry', async (req: Request, res: Response) => {
   try {
     const projects = await prisma.industryProject.findMany({
       orderBy: { order: 'asc' },
@@ -18,7 +18,7 @@ router.get('/industry', async (req, res) => {
   }
 });
 
-router.get('/industry/:id', async (req, res) => {
+router.get('/industry/:id', async (req: Request, res: Response) => {
   try {
     const project = await prisma.industryProject.findUnique({
       where: { id: req.params.id },
@@ -38,7 +38,7 @@ router.post(
   authenticate,
   requireAdmin,
   [body('title').notEmpty(), body('role').notEmpty()],
-  async (req, res) => {
+  async (req: AuthRequest, res: Response) => {
     try {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
@@ -53,7 +53,7 @@ router.post(
   }
 );
 
-router.put('/industry/:id', authenticate, requireAdmin, async (req, res) => {
+router.put('/industry/:id', authenticate, requireAdmin, async (req: AuthRequest, res: Response) => {
   try {
     const project = await prisma.industryProject.update({
       where: { id: req.params.id },
@@ -66,7 +66,7 @@ router.put('/industry/:id', authenticate, requireAdmin, async (req, res) => {
   }
 });
 
-router.delete('/industry/:id', authenticate, requireAdmin, async (req, res) => {
+router.delete('/industry/:id', authenticate, requireAdmin, async (req: AuthRequest, res: Response) => {
   try {
     await prisma.industryProject.delete({ where: { id: req.params.id } });
     res.json({ message: 'Project deleted successfully' });
@@ -77,7 +77,7 @@ router.delete('/industry/:id', authenticate, requireAdmin, async (req, res) => {
 });
 
 // Academic Projects
-router.get('/academic', async (req, res) => {
+router.get('/academic', async (req: Request, res: Response) => {
   try {
     const projects = await prisma.academicProject.findMany({
       orderBy: { order: 'asc' },
@@ -89,7 +89,7 @@ router.get('/academic', async (req, res) => {
   }
 });
 
-router.get('/academic/:id', async (req, res) => {
+router.get('/academic/:id', async (req: Request, res: Response) => {
   try {
     const project = await prisma.academicProject.findUnique({
       where: { id: req.params.id },
@@ -109,7 +109,7 @@ router.post(
   authenticate,
   requireAdmin,
   [body('title').notEmpty(), body('description').notEmpty()],
-  async (req, res) => {
+  async (req: AuthRequest, res: Response) => {
     try {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
@@ -124,7 +124,7 @@ router.post(
   }
 );
 
-router.put('/academic/:id', authenticate, requireAdmin, async (req, res) => {
+router.put('/academic/:id', authenticate, requireAdmin, async (req: AuthRequest, res: Response) => {
   try {
     const project = await prisma.academicProject.update({
       where: { id: req.params.id },
@@ -137,7 +137,7 @@ router.put('/academic/:id', authenticate, requireAdmin, async (req, res) => {
   }
 });
 
-router.delete('/academic/:id', authenticate, requireAdmin, async (req, res) => {
+router.delete('/academic/:id', authenticate, requireAdmin, async (req: AuthRequest, res: Response) => {
   try {
     await prisma.academicProject.delete({ where: { id: req.params.id } });
     res.json({ message: 'Project deleted successfully' });

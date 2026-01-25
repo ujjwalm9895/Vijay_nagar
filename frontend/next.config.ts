@@ -1,11 +1,11 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  output: "standalone",
+  // Use standalone for Render, but Vercel handles this automatically
+  output: process.env.VERCEL ? undefined : "standalone",
   images: {
     domains: [],
   },
-  // For Render deployment
   trailingSlash: false,
   reactStrictMode: true,
 };

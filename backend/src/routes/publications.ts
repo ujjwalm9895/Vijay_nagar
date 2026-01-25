@@ -1,12 +1,12 @@
-import express from 'express';
+import express, { Request, Response } from 'express';
 import { body, validationResult } from 'express-validator';
 import { prisma } from '../lib/prisma';
-import { authenticate, requireAdmin } from '../middleware/auth';
+import { authenticate, requireAdmin, AuthRequest } from '../middleware/auth';
 
 const router = express.Router();
 
 // Get all publications (public)
-router.get('/', async (req, res) => {
+router.get('/', async (req: Request, res: Response) => {
   try {
     const publications = await prisma.publication.findMany({
       orderBy: { order: 'asc' },
@@ -19,7 +19,7 @@ router.get('/', async (req, res) => {
 });
 
 // Get single publication (public)
-router.get('/:id', async (req, res) => {
+router.get('/:id', async (req: Request, res: Response) => {
   try {
     const publication = await prisma.publication.findUnique({
       where: { id: req.params.id },
@@ -46,7 +46,7 @@ router.post(
     body('authors').notEmpty(),
     body('description').notEmpty(),
   ],
-  async (req, res) => {
+  async (req: AuthRequest, res: Response) => {
     try {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
@@ -70,7 +70,7 @@ router.put(
   '/:id',
   authenticate,
   requireAdmin,
-  async (req, res) => {
+  async (req: AuthRequest, res: Response) => {
     try {
       const publication = await prisma.publication.update({
         where: { id: req.params.id },
@@ -90,7 +90,7 @@ router.delete(
   '/:id',
   authenticate,
   requireAdmin,
-  async (req, res) => {
+  async (req: AuthRequest, res: Response) => {
     try {
       await prisma.publication.delete({
         where: { id: req.params.id },

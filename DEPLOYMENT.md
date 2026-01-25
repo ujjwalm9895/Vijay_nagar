@@ -1,6 +1,8 @@
-# Deployment Guide - Render.com
+# Deployment Guide - Render.com (Backend Only)
 
-Complete guide to deploy your portfolio on Render.com.
+Complete guide to deploy your portfolio backend on Render.com.
+
+**For Vercel + Render setup (Recommended):** See [VERCEL_RENDER_DEPLOYMENT.md](VERCEL_RENDER_DEPLOYMENT.md)
 
 ## 🚀 Overview
 

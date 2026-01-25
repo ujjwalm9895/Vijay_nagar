@@ -2,13 +2,24 @@
 
 Get your portfolio up and running in 5 minutes!
 
-## 🚀 Deploy to Render (Production)
+## 🚀 Deploy to Production
 
-**Fastest way - Use Blueprint:**
-1. Push code to GitHub
-2. Render Dashboard → **New +** → **Blueprint**
-3. Connect repository
-4. Deploy!
+### Option 1: Vercel + Render (Recommended)
+
+**Best performance and reliability:**
+- **Frontend**: Vercel (optimized Next.js hosting)
+- **Backend**: Render (Node.js API + PostgreSQL)
+
+**Quick steps:**
+1. Deploy backend on Render (see [VERCEL_RENDER_DEPLOYMENT.md](VERCEL_RENDER_DEPLOYMENT.md))
+2. Deploy frontend on Vercel
+3. Connect them with environment variables
+
+### Option 2: Render Only
+
+**Everything on Render:**
+- Use Blueprint: Render Dashboard → **New +** → **Blueprint**
+- Or follow [RENDER_DEPLOYMENT.md](RENDER_DEPLOYMENT.md)
 
 See [RENDER_QUICKSTART.md](RENDER_QUICKSTART.md) for detailed steps.
 
@@ -73,7 +84,9 @@ Login endpoint: `POST http://localhost:3001/api/auth/login`
 1. Customize content in frontend pages
 2. Update `frontend/src/config/site.ts` with your links
 3. Add your publications/projects via API or seed file
-4. Deploy to Render (see RENDER_QUICKSTART.md or RENDER_DEPLOYMENT.md)
+4. Deploy to production:
+   - **Recommended**: Vercel + Render (see [VERCEL_RENDER_DEPLOYMENT.md](VERCEL_RENDER_DEPLOYMENT.md))
+   - **Alternative**: Render only (see [RENDER_QUICKSTART.md](RENDER_QUICKSTART.md))
 
 ## 🐛 Troubleshooting
 
@@ -92,6 +105,7 @@ Login endpoint: `POST http://localhost:3001/api/auth/login`
 ## 📖 Full Documentation
 
 - [README.md](README.md) - Complete documentation
-- [RENDER_DEPLOYMENT.md](RENDER_DEPLOYMENT.md) - Complete Render deployment guide
+- [VERCEL_RENDER_DEPLOYMENT.md](VERCEL_RENDER_DEPLOYMENT.md) - Vercel + Render deployment (Recommended)
+- [RENDER_DEPLOYMENT.md](RENDER_DEPLOYMENT.md) - Render only deployment
 - [RENDER_QUICKSTART.md](RENDER_QUICKSTART.md) - Quick Render deployment
 - [backend/README.md](backend/README.md) - Backend API docs
