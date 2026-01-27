@@ -62,9 +62,12 @@ export default function AboutPage() {
               <div>
                 <h3 className="text-xl font-semibold mb-4">Research Interests</h3>
                 <ul className="space-y-2 text-zinc-600 dark:text-zinc-400">
-                  <li>• Spatiotemporal perception</li>
+                  <li>• Computer vision</li>
+                  <li>• 3D perception</li>
+                  <li>• Machine Learning</li>
                   <li>• Foundation-model-based vision</li>
                   <li>• Causal reasoning & robustness</li>
+                  <li>• AI Based decision making</li>
                   <li>• Safety-critical AI</li>
                 </ul>
               </div>
