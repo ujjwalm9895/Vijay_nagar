@@ -6,8 +6,8 @@ export const siteConfig = {
   url: 'https://vijaynagar.dev',
   ogImage: '/og-image.jpg',
   links: {
-    linkedin: 'https://linkedin.com/in/vijaynagar',
-    github: 'https://github.com/vijaynagar',
+    linkedin: 'https://linkedin.com/in/vijay-nagar',
+    github: 'https://github.com/jvjnagar',
     scholar: 'https://scholar.google.com/citations?user=YOUR_ID',
     email: 'jvjnagar@gmail.com',
   },

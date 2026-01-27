@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 const achievements = [
   {
     icon: Award,
-    title: '4 Spot Awards',
+    title: '4 Spot (Key Player) Awards, 1 Star of the month (SOM), 1 Star of the quarter Award',
     description: 'Continental Autonomous Mobility',
     year: null,
   },

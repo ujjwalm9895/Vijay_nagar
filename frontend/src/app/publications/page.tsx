@@ -20,10 +20,10 @@ const publication = {
   contributions: [
     'Multi-frame alignment',
     'Deformable cross-attention',
-    'Robust detection under blur, motion, occlusion',
+    'Robust detection under blur, motion, occlusion by leveraging spatio-temporal information',
   ],
-  doi: 'https://doi.org/example',
-  pdfUrl: '#',
+    doi: 'https://ieeexplore.ieee.org/document/11306544/references#references',
+    pdfUrl: 'https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=11306544',
 };
 
 export default function PublicationsPage() {

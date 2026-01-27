@@ -17,18 +17,20 @@ const skillCategories = [
   {
     icon: Brain,
     title: 'Frameworks & Libraries',
-    skills: ['PyTorch', 'TensorFlow', 'Keras', 'OpenCV'],
+    skills: ['PyTorch', 'TensorFlow', 'Keras', 'OpenCV', 'MLFlow', 'Wandb'],
   },
   {
     icon: Wrench,
     title: 'Tools & Technologies',
-    skills: ['Docker', 'Git', 'Linux', 'Jenkins', 'LaTeX'],
+    skills: ['Docker', 'Git', 'Linux', 'Jenkins', 'LaTeX', 'Colab'],
   },
   {
     icon: Brain,
     title: 'Domains',
     skills: [
+      'Image processing',
       'Computer Vision',
+      'Machine Learning',
       'Deep Learning',
       'Transformers',
       'Signal Processing',
