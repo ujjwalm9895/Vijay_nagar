@@ -13,15 +13,15 @@ const teaching = [
     title: 'Teaching Assistant',
     institution: 'IIT Indore',
     role: 'TA',
-    period: '2019-2021',
-    description: 'Assisted in signal processing courses, conducted lab sessions, and mentored students.',
+    period: '2018-2020',
+    description: 'Assisted Electrical engineering courses, conducted lab sessions, and mentored students.',
   },
   {
     title: 'Subject Matter Expert',
     institution: 'Six Red Marbles',
     role: 'SME',
     period: '2020-2021',
-    description: 'Content development for educational materials in signal processing and communications.',
+    description: 'Content development for educational materials in Mathamatics and Electrical Engineering.',
   },
 ];
 
