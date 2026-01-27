@@ -1,12 +1,9 @@
-import { Metadata } from 'next';
+'use client';
+
+import { motion } from 'framer-motion';
 import { Section } from '@/components/section';
 import { Card } from '@/components/card';
 import { Briefcase, Calendar, Target } from 'lucide-react';
-
-export const metadata: Metadata = {
-  title: 'Industry Projects',
-  description: 'Industry projects in ADAS and Computer Vision',
-};
 
 const projects = [
   {
@@ -81,54 +78,104 @@ export default function IndustryProjectsPage() {
     <>
       <Section className="pt-32">
         <div className="space-y-12">
-          <div className="text-center space-y-4">
-            <h1 className="text-4xl sm:text-5xl font-bold">Industry Projects</h1>
-            <p className="text-lg text-zinc-600 dark:text-zinc-400 max-w-2xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="text-center space-y-4"
+          >
+            <motion.h1
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.2, type: 'spring', stiffness: 200 }}
+              className="text-4xl sm:text-5xl font-bold bg-gradient-to-r from-zinc-900 via-blue-600 to-purple-600 dark:from-zinc-100 dark:via-blue-400 dark:to-purple-400 bg-clip-text text-transparent"
+            >
+              Industry Projects
+            </motion.h1>
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.4 }}
+              className="text-lg text-zinc-600 dark:text-zinc-400 max-w-2xl mx-auto"
+            >
               Production-grade computer vision systems for ADAS applications
-            </p>
-          </div>
+            </motion.p>
+          </motion.div>
 
           <div className="space-y-8">
             {projects.map((project, index) => (
-              <Card key={index}>
-                <div className="space-y-4">
-                  <div>
-                    <h2 className="text-2xl font-semibold mb-2">{project.title}</h2>
-                    <div className="flex flex-wrap items-center gap-4 text-sm text-zinc-600 dark:text-zinc-400">
-                      <div className="flex items-center gap-2">
-                        <Briefcase className="h-4 w-4" />
-                        {project.role}
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <Calendar className="h-4 w-4" />
-                        {project.timeline}
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 50, scale: 0.95 }}
+                whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                viewport={{ once: true, margin: '-50px' }}
+                transition={{ delay: index * 0.15, duration: 0.5, type: 'spring', stiffness: 100 }}
+              >
+                <Card className="group">
+                  <motion.div
+                    whileHover={{ y: -5 }}
+                    transition={{ duration: 0.2 }}
+                    className="space-y-4"
+                  >
+                    <div>
+                      <motion.h2
+                        whileHover={{ scale: 1.02 }}
+                        className="text-2xl font-semibold mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors"
+                      >
+                        {project.title}
+                      </motion.h2>
+                      <div className="flex flex-wrap items-center gap-4 text-sm text-zinc-600 dark:text-zinc-400">
+                        <div className="flex items-center gap-2">
+                          <Briefcase className="h-4 w-4" />
+                          {project.role}
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Calendar className="h-4 w-4" />
+                          {project.timeline}
+                        </div>
                       </div>
                     </div>
-                  </div>
 
-                  <p className="text-zinc-700 dark:text-zinc-300">{project.description}</p>
+                    <p className="text-zinc-700 dark:text-zinc-300">{project.description}</p>
 
-                  <div>
-                    <h3 className="font-semibold mb-2 flex items-center gap-2">
-                      <Target className="h-4 w-4" />
-                      Key Contributions:
-                    </h3>
-                    <ul className="list-disc list-inside space-y-1 text-zinc-600 dark:text-zinc-400">
-                      {project.contributions.map((contribution, idx) => (
-                        <li key={idx}>{contribution}</li>
-                      ))}
-                    </ul>
-                  </div>
-
-                  {project.impact && (
-                    <div className="pt-2">
-                      <p className="text-sm font-medium text-zinc-900 dark:text-zinc-100">
-                        Impact: <span className="text-zinc-600 dark:text-zinc-400">{project.impact}</span>
-                      </p>
+                    <div>
+                      <h3 className="font-semibold mb-2 flex items-center gap-2">
+                        <Target className="h-4 w-4" />
+                        Key Contributions:
+                      </h3>
+                      <ul className="list-disc list-inside space-y-1 text-zinc-600 dark:text-zinc-400">
+                        {project.contributions.map((contribution, idx) => (
+                          <motion.li
+                            key={idx}
+                            initial={{ opacity: 0, x: -20 }}
+                            whileInView={{ opacity: 1, x: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ delay: 0.2 + idx * 0.1 }}
+                            whileHover={{ x: 5, color: '#3b82f6' }}
+                            className="transition-colors cursor-default"
+                          >
+                            {contribution}
+                          </motion.li>
+                        ))}
+                      </ul>
                     </div>
-                  )}
-                </div>
-              </Card>
+
+                    {project.impact && (
+                      <motion.div
+                        initial={{ opacity: 0 }}
+                        whileInView={{ opacity: 1 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: 0.4 }}
+                        className="pt-2"
+                      >
+                        <p className="text-sm font-medium text-zinc-900 dark:text-zinc-100">
+                          Impact: <span className="text-zinc-600 dark:text-zinc-400">{project.impact}</span>
+                        </p>
+                      </motion.div>
+                    )}
+                  </motion.div>
+                </Card>
+              </motion.div>
             ))}
           </div>
         </div>
