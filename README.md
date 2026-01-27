@@ -1,13 +1,13 @@
 # Vijay Nagar - Portfolio Website
 
-A modern, production-ready personal portfolio website for a Computer Vision Engineer & Applied AI Researcher.
+A modern, production-ready personal portfolio website for a Computer Vision Engineer & Applied AI Researcher. Built with Next.js, TypeScript, Node.js, and PostgreSQL.
 
 ## 🚀 Tech Stack
 
 ### Frontend
-- **Next.js 14+** (App Router)
+- **Next.js 16+** (App Router)
 - **TypeScript**
-- **Tailwind CSS**
+- **Tailwind CSS 4**
 - **Framer Motion** (animations)
 - **Radix UI** components
 - **next-themes** (dark mode)
@@ -15,7 +15,7 @@ A modern, production-ready personal portfolio website for a Computer Vision Engi
 - SEO optimized (metadata, OpenGraph, sitemap)
 
 ### Backend
-- **Node.js** + **Express**
+- **Node.js 20+** + **Express**
 - **TypeScript**
 - **Prisma** (ORM)
 - **PostgreSQL**
@@ -26,71 +26,97 @@ A modern, production-ready personal portfolio website for a Computer Vision Engi
 
 ```
 .
-├── frontend/          # Next.js application
+├── frontend/              # Next.js application
 │   ├── src/
-│   │   ├── app/      # App router pages
-│   │   ├── components/ # Reusable components
-│   │   ├── config/   # Configuration
-│   │   └── lib/      # Utilities
-│   └── public/       # Static assets
+│   │   ├── app/          # App router pages (11 pages)
+│   │   │   ├── admin/    # CMS Admin Dashboard
+│   │   │   ├── about/
+│   │   │   ├── publications/
+│   │   │   └── ...
+│   │   ├── components/  # Reusable components
+│   │   ├── config/      # Site configuration
+│   │   └── lib/         # Utilities
+│   └── public/          # Static assets
 │
-├── backend/          # Node.js API
+├── backend/              # Node.js API
 │   ├── src/
-│   │   ├── routes/   # API routes
-│   │   ├── middleware/ # Auth & error handling
-│   │   ├── lib/      # Utilities (JWT, Prisma)
-│   │   │   ├── jwt.ts      # Type-safe JWT utilities
-│   │   │   └── prisma.ts   # Prisma client
-│   │   └── prisma/   # Database seed
-│   └── prisma/       # Prisma schema
+│   │   ├── routes/      # API routes
+│   │   ├── middleware/  # Auth & error handling
+│   │   ├── lib/         # Utilities (JWT, Prisma)
+│   │   └── prisma/      # Database seed
+│   └── prisma/          # Prisma schema
 │
-└── docker-compose.yml # Docker setup
+└── docker-compose.yml   # Docker setup (optional)
 ```
 
-## 🛠️ Setup Instructions
+## 🛠️ Local Development
 
 ### Prerequisites
 
-- Node.js 20+
-- PostgreSQL 16+
-- Docker & Docker Compose (optional)
+- **Node.js 20+**
+- **PostgreSQL 16+** (or use Docker)
+- **npm** or **yarn**
 
-### Architecture Highlights
+### Step 1: Clone & Install
 
-- **Type-Safe JWT System**: Fully type-safe JWT token generation and verification with runtime validation
-- **Environment Validation**: JWT configuration validated at application startup
-- **Reusable Utilities**: Centralized JWT logic in `backend/src/lib/jwt.ts`
-- **Strict TypeScript**: Compatible with `strict: true` and `noImplicitAny`
-
-### Option 1: Local Development
-
-#### Backend Setup
-
-1. Navigate to backend directory:
 ```bash
+# Clone the repository
+git clone <your-repo-url>
+cd Vijay_nagar
+
+# Install backend dependencies
 cd backend
-```
+npm install
 
-2. Install dependencies:
-```bash
+# Install frontend dependencies
+cd ../frontend
 npm install
 ```
 
-3. Set up environment variables:
+### Step 2: Database Setup
+
+#### Option A: Local PostgreSQL
+
+1. Create a database:
 ```bash
+createdb vijay_nagar_db
+```
+
+2. Update `backend/.env`:
+```env
+DATABASE_URL="postgresql://user:password@localhost:5432/vijay_nagar_db?schema=public"
+```
+
+#### Option B: Docker (Recommended)
+
+```bash
+# From project root
+docker-compose up -d
+```
+
+This starts PostgreSQL on `localhost:5432` with:
+- Database: `vijay_nagar_db`
+- User: `postgres`
+- Password: `postgres`
+
+### Step 3: Backend Configuration
+
+1. Copy environment file:
+```bash
+cd backend
 cp .env.example .env
 ```
 
-**Generate a secure JWT secret (recommended):**
+2. Generate a secure JWT secret:
 ```bash
 npm run generate:jwt-secret
-# Copy the generated secret to your .env file
+# Copy the generated secret
 ```
 
-Edit `.env` with your configuration:
+3. Edit `backend/.env`:
 ```env
-DATABASE_URL="postgresql://user:password@localhost:5432/vijay_nagar_db?schema=public"
-JWT_SECRET="<generated-secret-from-above-command>"
+DATABASE_URL="postgresql://postgres:postgres@localhost:5432/vijay_nagar_db?schema=public"
+JWT_SECRET="<paste-generated-secret-here>"
 JWT_EXPIRES_IN="never"
 PORT=3001
 NODE_ENV=development
@@ -99,387 +125,387 @@ ADMIN_EMAIL=admin@example.com
 ADMIN_PASSWORD=changeme123
 ```
 
-**Note:** The `.env.example` file includes a secure example JWT secret (128 characters). For production, always generate a new unique secret using `npm run generate:jwt-secret`.
-
-4. Set up database:
+4. Setup database:
 ```bash
 # Generate Prisma client
 npm run db:generate
 
-# Run migrations
-npm run db:migrate
+# Push schema to database
+npm run db:push
 
-# Seed database (optional)
+# Seed database (creates admin user)
 npm run seed
 ```
 
-5. Start development server:
+5. Start backend:
 ```bash
 npm run dev
 ```
 
-Backend will run on `http://localhost:3001`
+Backend runs on `http://localhost:3001`
 
-#### Frontend Setup
+### Step 4: Frontend Configuration
 
-1. Navigate to frontend directory:
-```bash
-cd frontend
-```
-
-2. Install dependencies:
-```bash
-npm install
-```
-
-3. Set up environment variables:
-```bash
-cp .env.example .env.local
-```
-
-Edit `.env.local`:
+1. Create `frontend/.env.local`:
 ```env
 NEXT_PUBLIC_API_URL=http://localhost:3001/api
 NEXT_PUBLIC_SITE_URL=http://localhost:3000
 ```
 
-4. Start development server:
+2. Start frontend:
 ```bash
+cd frontend
 npm run dev
 ```
 
-Frontend will run on `http://localhost:3000`
+Frontend runs on `http://localhost:3000`
 
-### Option 2: Docker Setup
+### Step 5: Access the Application
 
-1. Start all services:
-```bash
-docker-compose up -d
-```
+- **Website**: http://localhost:3000
+- **Admin Dashboard**: http://localhost:3000/admin
+  - Email: `admin@example.com`
+  - Password: `changeme123` (from seed)
 
-2. Initialize database:
-```bash
-# Generate Prisma client and run migrations
-docker-compose exec backend npm run db:generate
-docker-compose exec backend npm run db:migrate
-docker-compose exec backend npm run seed
-```
+## 📦 Deployment
 
-3. Access:
-   - Frontend: `http://localhost:3000`
-   - Backend API: `http://localhost:3001`
-   - Database: `localhost:5432`
+### Recommended: Render (Backend) + Vercel (Frontend)
 
-## 📚 API Endpoints
+### Part 1: Deploy Backend to Render
 
-### Public Endpoints
+1. **Create PostgreSQL Database**:
+   - Go to [Render Dashboard](https://dashboard.render.com)
+   - Click **New +** → **PostgreSQL**
+   - Name: `vijay-nagar-db`
+   - Plan: `Free` (or `Starter` for production)
+   - Click **Create Database**
+   - Copy the **Internal Database URL**
 
-- `GET /api/health` - Health check
-- `GET /api/publications` - Get all publications
-- `GET /api/publications/:id` - Get single publication
-- `GET /api/projects/industry` - Get industry projects
-- `GET /api/projects/academic` - Get academic projects
-- `GET /api/experience` - Get experience
-- `GET /api/achievements` - Get achievements
-- `GET /api/teaching` - Get teaching & service
+2. **Create Backend Web Service**:
+   - Click **New +** → **Web Service**
+   - Connect your GitHub repository
+   - Configure:
+     - **Name**: `vijay-nagar-backend`
+     - **Root Directory**: `backend`
+     - **Environment**: `Node`
+     - **Build Command**: `npm ci && npm run build && npx prisma generate`
+     - **Start Command**: `npm start`
+     - **Plan**: `Free` (or `Starter` for production)
 
-### Admin Endpoints (JWT required)
+3. **Set Environment Variables**:
+   ```
+   DATABASE_URL=<from-postgres-service-internal-url>
+   JWT_SECRET=<generate-using-npm-run-generate:jwt-secret>
+   JWT_EXPIRES_IN=never
+   PORT=10000
+   NODE_ENV=production
+   FRONTEND_URL=https://your-frontend.vercel.app
+   ADMIN_EMAIL=admin@example.com
+   ADMIN_PASSWORD=<set-strong-password>
+   ```
 
-- `POST /api/auth/login` - Admin login
-- `GET /api/auth/me` - Get current user
-- `POST /api/auth/change-password` - Change password
-- `POST /api/publications` - Create publication
-- `PUT /api/publications/:id` - Update publication
-- `DELETE /api/publications/:id` - Delete publication
-- Similar CRUD endpoints for projects, experience, achievements, teaching
+4. **Deploy**:
+   - Click **Create Web Service**
+   - Wait for build to complete
+   - Note the service URL: `https://your-backend.onrender.com`
+   - **Test**: Visit the root URL to see API information
+   - **Health Check**: `https://your-backend.onrender.com/api/health`
 
-## 🔐 Admin Authentication
+5. **Run Database Migrations**:
+   - After first deploy, go to **Shell** tab
+   - Run: `npm run db:migrate:deploy`
+   - Run: `npm run seed` (creates admin user)
+
+### Part 2: Deploy Frontend to Vercel
+
+1. **Connect Repository**:
+   - Go to [Vercel Dashboard](https://vercel.com/dashboard)
+   - Click **Add New Project**
+   - Import your GitHub repository
+
+2. **Configure Project**:
+   - **Root Directory**: `frontend`
+   - **Framework Preset**: Next.js
+   - **Build Command**: `npm run build`
+   - **Output Directory**: `.next`
+
+3. **Set Environment Variables**:
+   ```
+   NEXT_PUBLIC_API_URL=https://your-backend.onrender.com/api
+   NEXT_PUBLIC_SITE_URL=https://your-frontend.vercel.app
+   ```
+
+4. **Deploy**:
+   - Click **Deploy**
+   - Wait for build to complete
+   - Your site is live!
+
+5. **Update Backend CORS**:
+   - Go back to Render backend service
+   - Update `FRONTEND_URL` to your Vercel URL
+   - Redeploy backend
+
+### Alternative: Deploy Both to Render
+
+If you prefer Render for both:
+
+1. **Frontend as Web Service** (not Static Site):
+   - **Important**: Must be Web Service for admin dashboard to work
+   - Follow same steps as backend
+   - Root Directory: `frontend`
+   - Build Command: `npm install && npm run build`
+   - Start Command: `npm start`
+   - Environment Variables:
+     ```
+     NEXT_PUBLIC_API_URL=https://your-backend.onrender.com/api
+     NEXT_PUBLIC_SITE_URL=https://your-frontend.onrender.com
+     ```
+
+2. **Update Backend CORS**:
+   - Set `FRONTEND_URL` to your Render frontend URL
+
+### Using Render Blueprint (One-Click Deploy)
+
+1. Push `render.yaml` to your repository
+2. Go to Render Dashboard → **New +** → **Blueprint**
+3. Connect repository
+4. Render will create all services automatically
+5. Update environment variables as needed
+
+## 🔐 Admin Dashboard
+
+### Access
+
+- **Local**: http://localhost:3000/admin
+- **Production**: https://your-domain.com/admin
 
 ### Login
 
-1. Login at `POST /api/auth/login`:
-```json
-{
-  "email": "admin@example.com",
-  "password": "changeme123"
-}
+- Email: Set in `ADMIN_EMAIL` environment variable
+- Password: Set in `ADMIN_PASSWORD` environment variable
+- Default (from seed): `admin@example.com` / `changeme123`
+
+### Features
+
+- **Web-based CMS**: Manage content through beautiful UI
+- **Publications**: Create, edit, delete publications
+- **Projects**: Manage industry and academic projects
+- **Experience**: Add work experience entries
+- **Achievements**: Manage awards and achievements
+- **Teaching**: Add teaching and service entries
+
+### API Endpoints
+
+All endpoints require authentication (except public GET):
+
+```
+POST   /api/auth/login          # Login
+GET    /api/auth/me              # Get current user
+POST   /api/auth/change-password # Change password
+
+GET    /api/publications        # List publications (public)
+POST   /api/publications        # Create (admin)
+PUT    /api/publications/:id    # Update (admin)
+DELETE /api/publications/:id    # Delete (admin)
+
+GET    /api/projects/industry    # List industry projects (public)
+POST   /api/projects/industry    # Create (admin)
+PUT    /api/projects/industry/:id # Update (admin)
+DELETE /api/projects/industry/:id # Delete (admin)
+
+GET    /api/projects/academic    # List academic projects (public)
+POST   /api/projects/academic    # Create (admin)
+PUT    /api/projects/academic/:id # Update (admin)
+DELETE /api/projects/academic/:id # Delete (admin)
+
+GET    /api/experience          # List experience (public)
+POST   /api/experience          # Create (admin)
+PUT    /api/experience/:id      # Update (admin)
+DELETE /api/experience/:id      # Delete (admin)
+
+GET    /api/achievements        # List achievements (public)
+POST   /api/achievements        # Create (admin)
+PUT    /api/achievements/:id    # Update (admin)
+DELETE /api/achievements/:id    # Delete (admin)
+
+GET    /api/teaching            # List teaching/service (public)
+POST   /api/teaching            # Create (admin)
+PUT    /api/teaching/:id        # Update (admin)
+DELETE /api/teaching/:id        # Delete (admin)
 ```
 
-2. Response includes JWT token:
-```json
-{
-  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-  "user": {
-    "id": "user-id",
-    "email": "admin@example.com",
-    "role": "admin"
-  }
-}
-```
+## 🐛 Troubleshooting
 
-3. Use the JWT token in subsequent requests:
-```
-Authorization: Bearer <token>
-```
+### Network Error in Admin Dashboard
 
-### Token Expiration
+**Problem**: "Network error. Please check your connection."
 
-- **No Expiration**: Set `JWT_EXPIRES_IN=never` or leave it unset
-- **With Expiration**: Set `JWT_EXPIRES_IN=7d` (or `24h`, `3600s`, etc.)
-- Tokens are validated at startup - invalid configuration will fail in production
+**Solutions**:
 
-### JWT Utility Functions
+1. **Check Environment Variables**:
+   - Frontend: `NEXT_PUBLIC_API_URL` must be set
+   - Backend: `FRONTEND_URL` must match frontend URL exactly
 
-The JWT system uses a centralized utility module (`backend/src/lib/jwt.ts`):
+2. **Verify Backend is Running**:
+   - Test root: `https://your-backend.onrender.com` (should show API info)
+   - Test health: `https://your-backend.onrender.com/api/health`
+   - Should return: `{"status":"ok"}`
 
-- `generateToken(payload, config?)` - Generate JWT tokens
-- `verifyToken(token, config?)` - Verify and decode tokens
-- `getJWTConfig()` - Get validated JWT configuration
-- `validateJWTEnv()` - Validate environment variables at startup
+3. **Check CORS**:
+   - Backend `FRONTEND_URL` must include `https://`
+   - No trailing slash
+   - Must match frontend URL exactly
 
-All functions are fully type-safe and compatible with strict TypeScript settings.
+4. **Frontend Deployment Type**:
+   - Must be **Web Service** (not Static Site) on Render
+   - Required for admin dashboard to work
 
-## 🎨 Features
+### Database Connection Error
 
-- ✅ Modern, clean design inspired by research labs
-- ✅ Dark mode support
-- ✅ Responsive (mobile-first)
-- ✅ Smooth animations (Framer Motion)
-- ✅ SEO optimized (metadata, sitemap, robots.txt)
-- ✅ CMS-ready backend API
-- ✅ **Type-safe JWT authentication** with runtime validation
-- ✅ **Environment variable validation** at startup
-- ✅ **Reusable JWT utilities** with proper error handling
-- ✅ Type-safe (TypeScript)
-- ✅ Production-ready Docker setup
+**Problem**: Backend can't connect to database
 
-## 📄 Pages
+**Solutions**:
 
-1. **Home** - Hero section with introduction
-2. **About** - Background and interests
-3. **Research Interests** - Research areas
-4. **Publications** - Research papers
-5. **Industry Projects** - Professional projects
-6. **Academic Projects** - Academic work
-7. **Experience** - Work history
-8. **Skills** - Technical skills
-9. **Achievements** - Awards and recognitions
-10. **Teaching & Service** - Academic contributions
-11. **Contact** - Contact information
+1. **Check DATABASE_URL**:
+   - Format: `postgresql://user:password@host:port/database?schema=public`
+   - Use **Internal Database URL** on Render (not External)
 
-## 📖 Using the CMS & Website
-
-### 🎨 Admin Dashboard UI (Recommended)
-
-**Access the Admin Dashboard**: Navigate to `/admin` on your website
-- **Local**: `http://localhost:3000/admin`
-- **Production**: `https://your-domain.com/admin`
-
-**Features:**
-- ✅ Beautiful, intuitive web interface
-- ✅ Login with email/password
-- ✅ Manage publications (Create, Read, Update, Delete)
-- ✅ Tabbed interface for different content types
-- ✅ Responsive design with dark mode support
-- ✅ Real-time updates
-- ✅ No coding required - point and click interface
-
-**Quick Start:**
-1. Visit `/admin` on your website
-2. Login with your admin credentials
-3. Start managing content through the UI!
-
-### 📚 API Access (For Developers)
-
-**📚 Complete CMS Usage Guide**: [CMS_USAGE.md](CMS_USAGE.md)
-- Admin authentication and login
-- Managing content (publications, projects, experience, etc.)
-- API endpoints and examples
-- Code examples (JavaScript, Python, curl)
-- Common workflows
-- Security best practices
-
-**⚡ Quick Reference**: [CMS_QUICK_REFERENCE.md](CMS_QUICK_REFERENCE.md)
-- Quick commands for common operations
-- One-liner examples
-- Endpoint reference table
-
-### Quick Start (API)
-
-1. **Login to CMS:**
+2. **Run Migrations**:
    ```bash
-   curl -X POST http://localhost:3001/api/auth/login \
-     -H "Content-Type: application/json" \
-     -d '{"email": "admin@example.com", "password": "changeme123"}'
+   npm run db:migrate:deploy
    ```
 
-2. **Use the token** in subsequent requests:
+3. **Verify Database is Running**:
+   - Check Render dashboard
+   - Database service should be "Available"
+
+### Build Errors
+
+**Problem**: TypeScript or build errors
+
+**Solutions**:
+
+1. **Install Dependencies**:
+   ```bash
+   npm install
    ```
-   Authorization: Bearer <your-token>
+
+2. **Generate Prisma Client**:
+   ```bash
+   npm run db:generate
    ```
 
-3. **Manage content** using the API endpoints (see guides above)
+3. **Check Node Version**:
+   - Must be Node.js 20+
+   - Check: `node --version`
 
-## 🚀 Quick Deploy
+### Admin Login Not Working
 
-### Option 1: Vercel + Render (Recommended)
+**Problem**: Can't login to admin dashboard
 
-1. **Backend on Render:**
-   - Create PostgreSQL database
-   - Deploy Web Service (root: `backend`)
-   - Set environment variables
+**Solutions**:
 
-2. **Frontend on Vercel:**
-   - Import GitHub repo
-   - Set root directory: `frontend`
-   - Add environment variables
+1. **Verify Admin User Exists**:
+   ```bash
+   npm run seed
+   ```
 
-3. **Connect them:**
-   - Update `FRONTEND_URL` in Render with Vercel URL
-   - Update `NEXT_PUBLIC_API_URL` in Vercel with Render URL
+2. **Check Credentials**:
+   - Email: From `ADMIN_EMAIL` env var
+   - Password: From `ADMIN_PASSWORD` env var
 
-**Full guide:** [VERCEL_RENDER_DEPLOYMENT.md](VERCEL_RENDER_DEPLOYMENT.md)
+3. **Reset Password**:
+   - Use API: `POST /api/auth/change-password`
+   - Or delete user and run seed again
 
-### Option 2: Render Only
+## 📝 Environment Variables Reference
 
-1. Use Render Blueprint (detects `render.yaml`)
-2. Or follow [RENDER_DEPLOYMENT.md](RENDER_DEPLOYMENT.md)
-
-## 🚢 Deployment
-
-### Recommended: Vercel (Frontend) + Render (Backend)
-
-**Best of both worlds:**
-- **Vercel**: Optimized Next.js hosting with edge functions and global CDN
-- **Render**: Reliable backend with managed PostgreSQL
-
-**Quick Deploy:**
-
-1. **Backend on Render:**
-   - Render Dashboard → **New +** → **PostgreSQL** (database)
-   - Render Dashboard → **New +** → **Web Service** (backend)
-   - Root Directory: `backend`
-   - Build: `npm install && npm run build && npx prisma generate`
-   - Start: `npm start`
-
-2. **Frontend on Vercel:**
-   - Vercel Dashboard → **Add New Project**
-   - Import GitHub repository
-   - Root Directory: `frontend`
-   - Framework: Next.js (auto-detected)
-
-3. **Set Environment Variables:**
-   - **Render Backend**: `DATABASE_URL`, `JWT_SECRET`, `FRONTEND_URL` (Vercel URL)
-   - **Vercel Frontend**: `NEXT_PUBLIC_API_URL` (Render backend URL)
-
-4. **Initialize Database:**
-   - Render Shell: `npx prisma migrate deploy`
-   - Optional: `npm run seed`
-
-**Full Guide:** See [VERCEL_RENDER_DEPLOYMENT.md](VERCEL_RENDER_DEPLOYMENT.md)
-
-### Alternative: Render Only
-
-Deploy everything on Render:
-- See [RENDER_DEPLOYMENT.md](RENDER_DEPLOYMENT.md) for complete guide
-- Or use [RENDER_QUICKSTART.md](RENDER_QUICKSTART.md) for quick setup
-
-### Local Development with Docker
-
-For local development only:
-```bash
-docker-compose up -d
-```
-
-**Note:** For production deployment, use Render.com (see above).
-
-## 🔧 Development
-
-### Backend Commands
-
-```bash
-npm run dev              # Start development server
-npm run build            # Build for production
-npm run start            # Start production server
-npm run generate:jwt-secret  # Generate secure JWT secret
-npm run db:generate      # Generate Prisma client
-npm run db:migrate       # Run database migrations
-npm run db:push          # Push schema changes
-npm run db:studio        # Open Prisma Studio
-npm run seed             # Seed database
-```
-
-### Frontend Commands
-
-```bash
-npm run dev          # Start development server
-npm run build        # Build for production
-npm run start        # Start production server
-npm run lint         # Run ESLint
-```
-
-## 📝 Environment Variables
-
-### Backend (.env for local development)
+### Backend (.env)
 
 ```env
-DATABASE_URL=postgresql://user:password@host:port/dbname
-JWT_SECRET=<generate-using-npm-run-generate-jwt-secret>
-JWT_EXPIRES_IN=never
+# Database
+DATABASE_URL=postgresql://user:password@host:port/database?schema=public
+
+# JWT
+JWT_SECRET=<64+ character hex string>
+JWT_EXPIRES_IN=never  # or "7d", "30d", etc.
+
+# Server
 PORT=3001
-NODE_ENV=development
-FRONTEND_URL=http://localhost:3000
+NODE_ENV=development  # or "production"
+
+# CORS
+FRONTEND_URL=http://localhost:3000  # or production URL
+
+# Admin (for seed)
 ADMIN_EMAIL=admin@example.com
 ADMIN_PASSWORD=changeme123
 ```
 
-**JWT Configuration:**
-- `JWT_SECRET` (required): Secret key for signing tokens. 
-  - **Generate securely**: `npm run generate:jwt-secret` (in backend directory)
-  - **Minimum length**: 32 characters (64+ recommended for production)
-  - **Security**: Must be cryptographically random - never use predictable values
-  - The `.env.example` file includes a secure example secret
-- `JWT_EXPIRES_IN` (optional): Token expiration time. Options:
-  - `never` or unset: Token never expires
-  - `7d`, `24h`, `3600s`: Time string format
-  - `3600`: Number (seconds)
-  - Examples: `7d`, `30d`, `24h`, `3600`, `never`
-
-### Frontend (.env.local for local development)
+### Frontend (.env.local)
 
 ```env
 NEXT_PUBLIC_API_URL=http://localhost:3001/api
 NEXT_PUBLIC_SITE_URL=http://localhost:3000
 ```
 
-### Deployment Environment Variables
+## 🎨 Website Pages
 
-**Vercel + Render (Recommended):**
-- **Render Backend**: `DATABASE_URL`, `JWT_SECRET`, `FRONTEND_URL` (Vercel URL)
-- **Vercel Frontend**: `NEXT_PUBLIC_API_URL` (Render backend URL), `NEXT_PUBLIC_SITE_URL` (Vercel URL)
+The portfolio includes 11 pages:
 
-**Render Only:**
-- See [RENDER_DEPLOYMENT.md](RENDER_DEPLOYMENT.md) for complete setup
+1. **Home** (`/`) - Hero, intro, quick links
+2. **About** (`/about`) - Personal background
+3. **Publications** (`/publications`) - Research papers
+4. **Industry Projects** (`/industry-projects`) - Work projects
+5. **Academic Projects** (`/academic-projects`) - Research projects
+6. **Experience** (`/experience`) - Work history
+7. **Skills** (`/skills`) - Technical skills
+8. **Achievements** (`/achievements`) - Awards & recognition
+9. **Teaching** (`/teaching`) - Teaching & service
+10. **Research Interests** (`/research-interests`) - Research areas
+11. **Contact** (`/contact`) - Contact information
 
-**Full guides:**
-- [VERCEL_RENDER_DEPLOYMENT.md](VERCEL_RENDER_DEPLOYMENT.md) - Vercel + Render setup
-- [RENDER_DEPLOYMENT.md](RENDER_DEPLOYMENT.md) - Render only setup
+## 🛠️ Development Scripts
 
-## 🤝 Contributing
+### Backend
 
-This is a personal portfolio project. For suggestions or improvements, please open an issue.
+```bash
+npm run dev              # Start development server
+npm run build            # Build for production
+npm start                # Start production server
+npm run db:generate      # Generate Prisma client
+npm run db:push          # Push schema to database
+npm run db:migrate       # Create migration
+npm run db:migrate:deploy # Deploy migrations (production)
+npm run db:studio        # Open Prisma Studio
+npm run seed             # Seed database
+npm run generate:jwt-secret # Generate JWT secret
+```
+
+### Frontend
+
+```bash
+npm run dev              # Start development server
+npm run build            # Build for production
+npm start                # Start production server
+npm run lint             # Run ESLint
+```
+
+## 📚 Additional Resources
+
+- **Prisma Docs**: https://www.prisma.io/docs
+- **Next.js Docs**: https://nextjs.org/docs
+- **Render Docs**: https://render.com/docs
+- **Vercel Docs**: https://vercel.com/docs
 
 ## 📄 License
 
-MIT License
+MIT
 
 ## 👤 Author
 
-**Vijay Nagar**
-- Email: jvjnagar@gmail.com
-- LinkedIn: [LinkedIn Profile]
-- GitHub: [GitHub Profile]
+Vijay Nagar - Computer Vision Engineer & Applied AI Researcher
 
 ---
 
-Built with ❤️ using Next.js and Node.js
+**Need Help?** Check the troubleshooting section or open an issue on GitHub.

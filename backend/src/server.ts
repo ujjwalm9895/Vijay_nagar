@@ -38,6 +38,25 @@ app.use(cors({
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Root route - API information
+app.get('/', (req: Request, res: Response) => {
+  res.json({
+    message: 'Vijay Nagar Portfolio API',
+    version: '1.0.0',
+    status: 'running',
+    endpoints: {
+      health: '/api/health',
+      auth: '/api/auth',
+      publications: '/api/publications',
+      projects: '/api/projects',
+      experience: '/api/experience',
+      achievements: '/api/achievements',
+      teaching: '/api/teaching',
+    },
+    documentation: 'See README.md for API documentation',
+  });
+});
+
 // Health check
 app.get('/api/health', (req: Request, res: Response) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
