@@ -38,9 +38,9 @@ const projects = [
   {
     title: 'Road Marking Detection (BEV)',
     role: 'Computer Vision Engineer',
-    timeline: '2022 - 2023',
+    timeline: 'April 2025 - July 2025',
     description:
-      "Bird's Eye View (BEV) based road marking detection system for Road markings.",
+      "Bird's Eye View (BEV) based road marking detection system by transforming front camera images using caliberation data.",
     contributions: [
       'Developed BEV transformation pipeline using camera calibration',
       'Optimized for edge deployment',
