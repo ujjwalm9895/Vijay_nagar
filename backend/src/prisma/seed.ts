@@ -34,8 +34,8 @@ async function main() {
       authors: 'Vijay Nagar, S. Kizhiyedath, T. R. Ratheesh',
       description:
         'Multi-frame spatiotemporal alignment using convolution-based deformable cross-attention on a CenterNet backbone.',
-      doi: 'https://doi.org/example',
-      pdfUrl: '#',
+      doi: 'https://ieeexplore.ieee.org/document/11306544/references#references',
+      pdfUrl: 'https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=11306544',
       order: 0,
     },
   });
@@ -53,7 +53,7 @@ async function main() {
         'Implemented robust perception pipelines',
         'Ensured compliance with automotive safety standards',
       ],
-      impact: 'Improved system reliability by 30%',
+      impact: 'Improved system reliability by 10%',
       order: 0,
     },
     {
@@ -65,7 +65,7 @@ async function main() {
         'Designed fusion architecture',
         'Optimized for real-time performance',
       ],
-      impact: 'Achieved 95% detection accuracy',
+      impact: 'Achieved 7-8% 3D detection and localization accuracy',
       order: 1,
     },
   ];
@@ -141,7 +141,7 @@ async function main() {
       institution: 'IIT Indore',
       role: 'TA',
       period: '2019-2021',
-      description: 'Assisted in signal processing courses',
+      description: 'Assisted in undgraduate students for Electrical engineering subjects',
       order: 0,
     },
     {
