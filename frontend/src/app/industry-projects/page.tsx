@@ -33,7 +33,7 @@ const projects = [
       'Optimized for real-time performance',
       'Implemented 3D localization algorithms',
     ],
-    impact: 'Achieved 95% detection accuracy',
+    impact: 'Improved 7-8% 3D detection and localization accuracy compared basline model',
   },
   {
     title: 'Road Marking Detection (BEV)',
@@ -59,7 +59,7 @@ const projects = [
       'Optimized inference pipeline',
       'Implemented temporal consistency checks',
     ],
-    impact: 'Achieved 30 FPS on embedded hardware',
+    impact: 'Achieved a 3 ms runtime while accurately detecting signs over distances exceeding 120 meters.',
   },
   {
     title: 'Traffic Sign Recognition',
@@ -72,7 +72,7 @@ const projects = [
       'Trained and fine-tuned recognition models',
       'Deployed on production systems',
     ],
-    impact: 'Achieved 98% recognition accuracy',
+    impact: 'Achieved an overall recognition accuracy of 94% across more than 300 classes.',
   },
 ];
 
