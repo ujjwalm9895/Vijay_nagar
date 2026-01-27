@@ -65,7 +65,7 @@ async function main() {
         'Designed fusion architecture',
         'Optimized for real-time performance',
       ],
-      impact: 'Achieved 7-8% 3D detection and localization accuracy',
+      impact: 'Improved 7-8% 3D detection and localization accuracy compared basline model',
       order: 1,
     },
   ];
