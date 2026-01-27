@@ -312,7 +312,22 @@ NEXT_PUBLIC_SITE_URL=http://localhost:3000
 5. **Run Database Migrations**:
    - After first deploy, go to **Shell** tab
    - Run: `npm run db:migrate:deploy`
-   - Run: `npm run seed` (creates admin user)
+
+6. **Setup Admin User** (Choose one method):
+   
+   **Method A: Web UI (Recommended)**:
+   - Visit: `https://your-frontend.vercel.app/admin/setup`
+   - Fill in email and password
+   - Click "Create Admin User"
+   
+   **Method B: Command Line**:
+   - Go to **Shell** tab
+   - Run: `npm run admin:setup` (uses env vars)
+   - Or: `npm run admin:create -- --email admin@example.com --password YourPassword123`
+   
+   **Method C: API Endpoint**:
+   - POST to `/api/admin/setup` with email and password
+   - Only works if no admin exists
 
 ### Part 2: Deploy Frontend to Vercel
 

@@ -41,11 +41,12 @@ export default function AdminPage() {
   const [formData, setFormData] = useState<any>({});
 
   useEffect(() => {
+    // Check if admin exists, redirect to setup if not
+    checkAdminAndRedirect();
+    
     // Test API connection on mount (non-blocking, just for diagnostics)
-    // Don't block the UI if connection test fails
     testApiConnection().catch(() => {
       // Silently handle - connection test is just for diagnostics
-      // User can still try to login, which will show proper errors
     });
     
     const storedToken = localStorage.getItem('admin_token');
@@ -54,6 +55,21 @@ export default function AdminPage() {
       verifyToken(storedToken);
     }
   }, []);
+
+  const checkAdminAndRedirect = async () => {
+    try {
+      const response = await fetch(`${API_URL}/admin/status`);
+      const data = await response.json();
+      
+      if (!data.adminExists && data.setupRequired) {
+        // No admin exists, redirect to setup
+        window.location.href = '/admin/setup';
+      }
+    } catch (err) {
+      // Silently fail - let user try to login
+      console.error('Failed to check admin status:', err);
+    }
+  };
 
   const testApiConnection = async () => {
     try {

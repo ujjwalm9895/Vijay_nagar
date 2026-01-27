@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import { errorHandler } from './middleware/errorHandler';
 import { validateJWTEnv } from './lib/jwt';
 import authRoutes from './routes/auth';
+import adminRoutes from './routes/admin';
 import publicationRoutes from './routes/publications';
 import projectRoutes from './routes/projects';
 import experienceRoutes from './routes/experience';
@@ -125,6 +126,7 @@ app.get('/api/health', (req: Request, res: Response) => {
 
 // Routes
 app.use('/api/auth', authRoutes);
+app.use('/api/admin', adminRoutes);
 app.use('/api/publications', publicationRoutes);
 app.use('/api/projects', projectRoutes);
 app.use('/api/experience', experienceRoutes);

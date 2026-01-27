@@ -13,6 +13,8 @@
     "db:migrate:deploy": "prisma migrate deploy",
     "db:studio": "prisma studio",
     "seed": "tsx src/prisma/seed.ts",
+    "admin:setup": "tsx src/admin/setup.ts",
+    "admin:create": "tsx src/admin/setup.ts --force",
     "postinstall": "prisma generate",
     "generate:jwt-secret": "node scripts/generate-jwt-secret.js"
   },
