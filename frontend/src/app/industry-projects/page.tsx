@@ -12,7 +12,7 @@ const projects = [
   {
     title: 'AI Safety & Security for ADAS',
     role: 'Computer Vision Engineer',
-    timeline: '2023 - Present',
+    timeline: '2026 - Present',
     description:
       'Developed safety-critical AI systems for autonomous driving applications with focus on robustness and reliability.',
     contributions: [
@@ -20,12 +20,12 @@ const projects = [
       'Ensured compliance with automotive safety standards',
       'Developed testing frameworks for AI safety',
     ],
-    impact: 'Improved system reliability by 30%',
+    impact: 'Improved system reliability by 10%',
   },
   {
     title: '3D Traffic Sign Detection (LiDAR–Camera Fusion)',
     role: 'Computer Vision Engineer',
-    timeline: '2022 - 2023',
+    timeline: '2024 - 2025',
     description:
       'Multi-modal fusion system for accurate 3D traffic sign detection using LiDAR and camera data.',
     contributions: [
@@ -40,22 +40,22 @@ const projects = [
     role: 'Computer Vision Engineer',
     timeline: '2022 - 2023',
     description:
-      "Bird's Eye View (BEV) based road marking detection system for lane keeping and navigation.",
+      "Bird's Eye View (BEV) based road marking detection system for Road markings.",
     contributions: [
-      'Developed BEV transformation pipeline',
-      'Implemented semantic segmentation for road markings',
+      'Developed BEV transformation pipeline using camera calibration',
       'Optimized for edge deployment',
     ],
-    impact: 'Reduced false positives by 25%',
+    impact: 'Reduced false positives by 15% and improve detection performance',
   },
   {
     title: 'Real-Time Traffic Sign & Light Detection',
     role: 'Computer Vision Engineer',
-    timeline: '2021 - 2022',
+    timeline: '2023 - Present',
     description:
       'Real-time detection system for traffic signs and lights using deep learning on video streams.',
     contributions: [
       'Designed efficient CNN architecture',
+      'Proposed mutiresolution input architecture to improve the small object detection performance',
       'Optimized inference pipeline',
       'Implemented temporal consistency checks',
     ],
@@ -64,7 +64,7 @@ const projects = [
   {
     title: 'Traffic Sign Recognition',
     role: 'Computer Vision Engineer',
-    timeline: '2021 - 2022',
+    timeline: '2021 - 2023',
     description:
       'Multi-class traffic sign recognition system with high accuracy and robustness to variations.',
     contributions: [
