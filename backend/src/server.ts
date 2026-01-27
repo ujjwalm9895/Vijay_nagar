@@ -28,12 +28,73 @@ const app = express();
 const PORT = process.env.PORT || 3001;
 
 // Middleware
+// CORS Configuration - Allow multiple frontend origins
 const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+
+// Build list of allowed origins
+const allowedOrigins: string[] = [];
+
+// Always allow localhost for local development
+allowedOrigins.push('http://localhost:3000');
+
+// Add production frontend URL if set
+if (frontendUrl && frontendUrl !== 'http://localhost:3000') {
+  allowedOrigins.push(frontendUrl);
+}
+
+// Allow common Vercel and Render frontend patterns
+// Add any additional frontend URLs from environment variable (comma-separated)
+if (process.env.ALLOWED_ORIGINS) {
+  const additionalOrigins = process.env.ALLOWED_ORIGINS.split(',').map(o => o.trim());
+  allowedOrigins.push(...additionalOrigins);
+}
+
+// In development, be more permissive
+if (process.env.NODE_ENV === 'development') {
+  // Allow common localhost ports
+  allowedOrigins.push(
+    'http://localhost:3000',
+    'http://localhost:3001',
+    'http://127.0.0.1:3000',
+    'http://127.0.0.1:3001'
+  );
+}
+
+// Remove duplicates
+const uniqueOrigins = [...new Set(allowedOrigins)];
+
+console.log('🌐 CORS Allowed Origins:', uniqueOrigins);
+
 app.use(cors({
-  origin: frontendUrl,
+  origin: (origin, callback) => {
+    // Allow requests with no origin (like mobile apps, curl, Postman, etc.)
+    if (!origin) {
+      return callback(null, true);
+    }
+    
+    // Check if origin is in allowed list
+    if (uniqueOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      // Log blocked origin for debugging
+      console.warn('⚠️ CORS blocked origin:', origin);
+      console.warn('   Allowed origins:', uniqueOrigins);
+      callback(new Error(`Not allowed by CORS. Origin: ${origin}`));
+    }
+  },
   credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: [
+    'Content-Type',
+    'Authorization',
+    'X-Requested-With',
+    'Accept',
+    'Origin',
+    'Access-Control-Request-Method',
+    'Access-Control-Request-Headers'
+  ],
+  exposedHeaders: ['Content-Length', 'Content-Type'],
+  maxAge: 86400, // 24 hours - cache preflight requests
 }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

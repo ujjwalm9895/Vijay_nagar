@@ -146,6 +146,8 @@ Backend runs on `http://localhost:3001`
 
 ### Step 4: Frontend Configuration
 
+#### Option A: Local Frontend + Local Backend (Default)
+
 1. Create `frontend/.env.local`:
 ```env
 NEXT_PUBLIC_API_URL=http://localhost:3001/api
@@ -159,6 +161,102 @@ npm run dev
 ```
 
 Frontend runs on `http://localhost:3000`
+
+#### Option B: Local Frontend + Render Backend (Testing Production Backend)
+
+1. Create `frontend/.env.local`:
+```env
+NEXT_PUBLIC_API_URL=https://vijay-nagar-backend.onrender.com/api
+NEXT_PUBLIC_SITE_URL=http://localhost:3000
+```
+
+**Important Configuration Steps**:
+
+1. **Create/Edit `frontend/.env.local` file**:
+   ```bash
+   # Navigate to frontend directory
+   cd frontend
+   
+   # Create .env.local file (if it doesn't exist)
+   # On Windows PowerShell:
+   New-Item .env.local -ItemType File
+   # On Mac/Linux:
+   touch .env.local
+   ```
+
+2. **Add the environment variables** (open `.env.local` in your editor):
+   ```env
+   NEXT_PUBLIC_API_URL=https://vijay-nagar-backend.onrender.com/api
+   NEXT_PUBLIC_SITE_URL=http://localhost:3000
+   ```
+
+3. **⚠️ Remove Trailing Slash**:
+   - **Correct**: `https://vijay-nagar-backend.onrender.com/api` ✅
+   - **Wrong**: `https://vijay-nagar-backend.onrender.com/api/` ❌
+   
+   **Why?** The trailing slash can cause routing issues. Your API endpoints are:
+   - `/api/auth/login` (not `/api//auth/login`)
+   - `/api/publications` (not `/api//publications`)
+   
+   **How to check**: Open `.env.local` and make sure the URL ends with `/api` (no slash after `api`)
+
+4. **Backend CORS Configuration**:
+   - The backend code has been updated to allow `http://localhost:3000` for local testing
+   - This means your local frontend can connect to the Render backend
+   - **You need to redeploy the backend** on Render for this to work (see below)
+
+5. **Redeploy Backend on Render** (one-time setup):
+   - The backend CORS code allows localhost connections
+   - Go to Render dashboard → Your backend service
+   - Click **Manual Deploy** → **Deploy latest commit**
+   - Or push your code changes to GitHub (auto-deploy)
+   - Wait for deployment to complete (~2-3 minutes)
+
+6. **Verify `.env.local` is correct**:
+   ```bash
+   # Check the file contents
+   cat .env.local  # Mac/Linux
+   type .env.local  # Windows PowerShell
+   Get-Content .env.local  # Windows PowerShell (alternative)
+   ```
+   
+   Should show:
+   ```
+   NEXT_PUBLIC_API_URL=https://vijay-nagar-backend.onrender.com/api
+   NEXT_PUBLIC_SITE_URL=http://localhost:3000
+   ```
+   
+   **Verify no trailing slash**: The API URL should end with `/api` (not `/api/`)
+
+7. **Start frontend**:
+   ```bash
+   npm run dev
+   ```
+   
+   You should see:
+   ```
+   ▲ Next.js 16.x.x
+   - Local:        http://localhost:3000
+   - Ready in X seconds
+   ```
+
+8. **Access admin dashboard**:
+   - Open browser: `http://localhost:3000/admin`
+   - Use credentials from your Render backend:
+     - Email: Check `ADMIN_EMAIL` in Render dashboard
+     - Password: Check `ADMIN_PASSWORD` in Render dashboard
+
+9. **Test the connection**:
+   - Open browser DevTools (F12) → Console tab
+   - Look for any errors
+   - If you see "Cannot reach API", wait 10-15 seconds and refresh
+   - Render free tier services sleep after 15 minutes and need time to wake up
+
+**Troubleshooting**:
+- **If you see CORS errors**: Make sure backend is redeployed with the updated CORS code
+- **If API URL not found**: Check `.env.local` has no trailing slash
+- **If connection timeout**: Wait 10-15 seconds (Render service waking up)
+- **If still not working**: Check browser console for specific error messages
 
 ### Step 5: Access the Application
 
@@ -338,27 +436,54 @@ DELETE /api/teaching/:id        # Delete (admin)
 
 ### Network Error in Admin Dashboard
 
-**Problem**: "Network error. Please check your connection."
+**Problem**: "Cannot reach API" or "Network error. Please check your connection."
 
-**Solutions**:
+**⚠️ Most Common Cause: Render Free Tier Service Sleeping**
 
-1. **Check Environment Variables**:
-   - Frontend: `NEXT_PUBLIC_API_URL` must be set
-   - Backend: `FRONTEND_URL` must match frontend URL exactly
+Render free tier services automatically sleep after 15 minutes of inactivity. This is the #1 cause of "Cannot reach API" errors.
 
-2. **Verify Backend is Running**:
-   - Test root: `https://your-backend.onrender.com` (should show API info)
-   - Test health: `https://your-backend.onrender.com/api/health`
-   - Should return: `{"status":"ok"}`
+**Quick Fix**:
+1. **Wait 10-15 seconds** after the first request (service needs to wake up)
+2. **Refresh the page** - the second request should work
+3. **Test backend first**: Visit `https://vijay-nagar-backend.onrender.com/api/health` in your browser
+4. **Upgrade to paid plan** if you need always-on service (no sleeping)
 
-3. **Check CORS**:
-   - Backend `FRONTEND_URL` must include `https://`
-   - No trailing slash
-   - Must match frontend URL exactly
+**Common Causes & Solutions**:
 
-4. **Frontend Deployment Type**:
+1. **Backend Service Sleeping (Render Free Tier)**:
+   - **Issue**: Render free tier services sleep after 15 minutes of inactivity
+   - **Solution**: 
+     - Wait 10-15 seconds after first request (service needs to wake up)
+     - Or upgrade to paid plan for always-on service
+     - Test: Visit `https://your-backend.onrender.com/api/health` in browser first
+
+2. **Environment Variables Not Set**:
+   - **Frontend**: `NEXT_PUBLIC_API_URL` must be set to `https://your-backend.onrender.com/api`
+   - **Backend**: `FRONTEND_URL` must match frontend URL exactly (e.g., `https://your-frontend.vercel.app`)
+   - **Action**: Set in Vercel/Render dashboard → Environment Variables → Redeploy
+
+3. **CORS Misconfiguration**:
+   - **Backend `FRONTEND_URL`** must:
+     - Include `https://` (not `http://`)
+     - Match frontend URL exactly
+     - No trailing slash
+     - Example: `https://your-frontend.vercel.app` (not `https://your-frontend.vercel.app/`)
+   - **Action**: Update in Render backend service → Environment Variables → Redeploy
+
+4. **Backend Not Running**:
+   - **Test**: Visit `https://your-backend.onrender.com` in browser
+   - **Should see**: API information JSON
+   - **If error**: Check Render dashboard → Logs tab for errors
+
+5. **Frontend Deployment Type**:
    - Must be **Web Service** (not Static Site) on Render
    - Required for admin dashboard to work
+   - Vercel: Always works (no configuration needed)
+
+6. **Network/Timeout Issues**:
+   - First request to sleeping service may timeout
+   - **Solution**: Refresh page after 10-15 seconds
+   - Check browser console for detailed error messages
 
 ### Database Connection Error
 

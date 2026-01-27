@@ -41,8 +41,12 @@ export default function AdminPage() {
   const [formData, setFormData] = useState<any>({});
 
   useEffect(() => {
-    // Test API connection on mount
-    testApiConnection();
+    // Test API connection on mount (non-blocking, just for diagnostics)
+    // Don't block the UI if connection test fails
+    testApiConnection().catch(() => {
+      // Silently handle - connection test is just for diagnostics
+      // User can still try to login, which will show proper errors
+    });
     
     const storedToken = localStorage.getItem('admin_token');
     if (storedToken) {
@@ -53,13 +57,79 @@ export default function AdminPage() {
 
   const testApiConnection = async () => {
     try {
-      const response = await fetch(`${API_URL.replace('/api', '')}/api/health`);
-      if (!response.ok) {
-        console.warn('API health check failed:', response.status);
+      // Test root URL first (more reliable)
+      const rootUrl = API_URL.replace('/api', '');
+      const healthUrl = `${rootUrl}/api/health`;
+      
+      console.log('🔍 Testing API connection...');
+      console.log('📍 API URL:', API_URL);
+      console.log('📍 Root URL:', rootUrl);
+      console.log('📍 Health URL:', healthUrl);
+      
+      // Use longer timeout for Render free tier (services may sleep)
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 20000); // 20 second timeout
+      
+      try {
+        const response = await fetch(healthUrl, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          signal: controller.signal,
+        });
+        
+        clearTimeout(timeoutId);
+        
+        if (response.ok) {
+          const data = await response.json();
+          console.log('✅ API connection successful:', data);
+          return true;
+        } else {
+          console.warn('⚠️ API health check failed:', response.status, response.statusText);
+          if (response.status === 0 || response.status === 404) {
+            console.warn('💡 This might be a CORS issue. Check backend CORS configuration.');
+          }
+          return false;
+        }
+      } catch (fetchError) {
+        clearTimeout(timeoutId);
+        throw fetchError;
       }
     } catch (err) {
-      console.error('Cannot reach API at:', API_URL);
-      console.error('Error:', err);
+      const errorMessage = err instanceof Error ? err.message : 'Unknown error';
+      const errorName = err instanceof Error ? err.name : 'Unknown';
+      
+      console.warn('⚠️ Cannot reach API at:', API_URL);
+      console.warn('Error type:', errorName);
+      console.warn('Error details:', errorMessage);
+      
+      // Provide helpful error message based on error type
+      if (errorName === 'AbortError' || errorMessage.includes('timeout')) {
+        console.warn('💡 Timeout Error - Possible causes:');
+        console.warn('   1. Backend service is sleeping (Render free tier)');
+        console.warn('   2. Network is slow');
+        console.warn('   → Solution: Wait 15-20 seconds and try again');
+        console.warn('   → Or: Visit https://vijay-nagar-backend.onrender.com/api/health in browser first to wake it up');
+      } else if (errorMessage.includes('Failed to fetch') || errorMessage.includes('NetworkError')) {
+        console.warn('💡 Network Error - Possible causes:');
+        console.warn('   1. Backend service is down or sleeping');
+        console.warn('   2. CORS is not configured correctly');
+        console.warn('   3. Backend URL is incorrect');
+        console.warn('   → Solution: Check backend is running and CORS allows localhost:3000');
+        console.warn('   → Verify: Visit https://vijay-nagar-backend.onrender.com in browser');
+      } else if (errorMessage.includes('CORS') || errorMessage.includes('Not allowed')) {
+        console.warn('💡 CORS Error - Backend needs to allow localhost:3000');
+        console.warn('   → Solution: Redeploy backend with updated CORS code');
+        console.warn('   → Or: Check FRONTEND_URL in Render backend environment variables');
+      } else {
+        console.warn('💡 Unknown Error - Check:');
+        console.warn('   1. Backend service status in Render dashboard');
+        console.warn('   2. Browser console for more details');
+        console.warn('   3. Network tab in DevTools');
+      }
+      
+      return false;
     }
   };
 
