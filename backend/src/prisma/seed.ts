@@ -47,7 +47,7 @@ async function main() {
     {
       title: 'AI Safety & Security for ADAS',
       role: 'Computer Vision Engineer',
-      timeline: '2023 - Present',
+      timeline: '2026 - Present',
       description: 'Developed safety-critical AI systems for autonomous driving applications.',
       contributions: [
         'Implemented robust perception pipelines',
@@ -59,7 +59,7 @@ async function main() {
     {
       title: '3D Traffic Sign Detection (LiDAR–Camera Fusion)',
       role: 'Computer Vision Engineer',
-      timeline: '2022 - 2023',
+      timeline: '2024 - 2025',
       description: 'Multi-modal fusion system for accurate 3D traffic sign detection.',
       contributions: [
         'Designed fusion architecture',
