@@ -9,13 +9,13 @@ import { TrendingUp, TrendingDown, Award, Briefcase, GraduationCap, Target, BarC
 const stats = [
   { label: 'Publications', value: 1, change: '+1', trend: 'up', icon: GraduationCap },
   { label: 'Industry Projects', value: 5, change: '+2', trend: 'up', icon: Briefcase },
-  { label: 'Years Experience', value: 3.5, change: '+0.5', trend: 'up', icon: Activity },
+  { label: 'Years Experience', value: 4.5, change: '+0.5', trend: 'up', icon: Activity },
   { label: 'Awards', value: 6, change: '+2', trend: 'up', icon: Award },
 ];
 
 const projectTimeline = [
   { year: 2021, projects: 1, label: 'Traffic Sign Recognition' },
-  { year: 2022, projects: 0, label: '' },
+  { year: 2022, projects: 0, label: 'Traffic Sign Recognition' },
   { year: 2023, projects: 1, label: 'Traffic Sign & Light Detection' },
   { year: 2024, projects: 1, label: '3D Traffic Sign Detection' },
   { year: 2025, projects: 2, label: 'Road Marking Detection, AI Safety' },
